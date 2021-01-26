@@ -96,4 +96,12 @@ public class MathUtil {
     public static boolean isWithinTolerance(double value, double target, double tolerance) {
         return Math.abs(value - target) < tolerance;
     }
+
+    public static double getMagnitude(double...values) {
+        double sum = 0;
+        for(double a: values) {
+            sum += a * a;
+        }
+        return Math.sqrt(sum);
+    }
 }
