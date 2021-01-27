@@ -20,6 +20,10 @@
 
 package org.rivierarobotics.lib;
 
+/**
+ *
+ * @since 0.1.0
+ */
 public class MathUtil {
     private static final double DEADBAND = 0.08;
     private static final double TICKS_PER_DEGREE = 4096.0 / 360;
@@ -27,10 +31,21 @@ public class MathUtil {
     private MathUtil() {
     }
 
+    /**
+     * @param val
+     * @return
+     * @since 0.1.0
+     */
     public static double fitDeadband(double val) {
         return fitDeadband(val, DEADBAND);
     }
 
+    /**
+     * @param val
+     * @param deadband
+     * @return
+     * @since 0.1.0
+     */
     public static double fitDeadband(double val, double deadband) {
         if (!(Math.abs(val) < deadband)) {
             if (val > 0) {
@@ -50,10 +65,19 @@ public class MathUtil {
         return 0;
     }
 
+    /**
+     * @since 0.1.0
+     */
     public static double wrapToCircle(double angle) {
         return wrapToCircle(angle, 360); //default 360 degrees/circle
     }
 
+    /**
+     * @param angle
+     * @param fullCircle
+     * @return
+     * @since 0.1.0
+     */
     public static double wrapToCircle(double angle, int fullCircle) {
         angle %= fullCircle;
         if (angle < 0) {
@@ -63,10 +87,20 @@ public class MathUtil {
         }
     }
 
+    /**
+     * @since 0.1.0
+     */
     public static double limit(double value, double minmax) {
         return limit(value, -minmax, minmax);
     }
 
+    /**
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     * @since 0.1.0
+     */
     public static double limit(double value, double min, double max) {
         if (value > max) {
             return max;
@@ -77,26 +111,56 @@ public class MathUtil {
         }
     }
 
+    /**
+     * @since 0.1.0
+     */
     public static double degreesToTicks(double degrees) {
         return degreesToTicks(degrees, TICKS_PER_DEGREE);
     }
 
+    /**
+     * @param degrees
+     * @param ticksPerDegree
+     * @return
+     * @since 0.1.0
+     */
     public static double degreesToTicks(double degrees, double ticksPerDegree) {
         return degrees * ticksPerDegree;
     }
 
+    /**
+     * @since 0.1.0
+     */
     public static double ticksToDegrees(double ticks) {
         return ticksToDegrees(ticks, 1 / TICKS_PER_DEGREE);
     }
 
+    /**
+     * @param ticks
+     * @param degreesPerTick
+     * @return
+     * @since 0.1.0
+     */
     public static double ticksToDegrees(double ticks, double degreesPerTick) {
         return ticks * degreesPerTick;
     }
 
+    /**
+     * @param value
+     * @param target
+     * @param tolerance
+     * @return
+     * @since 0.1.0
+     */
     public static boolean isWithinTolerance(double value, double target, double tolerance) {
         return Math.abs(value - target) < tolerance;
     }
 
+    /**
+     * @param values
+     * @return
+     * @since 0.1.0
+     */
     public static double getMagnitude(double...values) {
         double sum = 0;
         for(double a: values) {

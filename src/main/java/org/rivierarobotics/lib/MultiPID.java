@@ -22,11 +22,21 @@ package org.rivierarobotics.lib;
 
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
+/**
+ *
+ * @see PIDConfig
+ * @since 0.1.0
+ */
 public class MultiPID {
     private final BaseTalon motor;
     private final PIDConfig[] configs;
     private int currentIdx = 0;
 
+    /**
+     * @param motor
+     * @param configs
+     * @since 0.1.0
+     */
     public MultiPID(BaseTalon motor, PIDConfig... configs) {
         this.motor = motor;
         this.configs = configs;
@@ -34,18 +44,36 @@ public class MultiPID {
         motor.selectProfileSlot(0, 0);
     }
 
+    /**
+     * @param type
+     * @return
+     * @since 0.1.0
+     */
     public PIDConfig getConfig(MultiPID.Type type) {
         return getConfig(type.ordinal());
     }
 
+    /**
+     * @param idx
+     * @return
+     * @since 0.1.0
+     */
     public PIDConfig getConfig(int idx) {
         return configs[idx];
     }
 
+    /**
+     * @param type
+     * @since 0.1.0
+     */
     public void selectConfig(MultiPID.Type type) {
         selectConfig(type.ordinal());
     }
 
+    /**
+     * @param idx
+     * @since 0.1.0
+     */
     public void selectConfig(int idx) {
         if (currentIdx != idx) {
             motor.selectProfileSlot(idx, 0);
@@ -53,12 +81,20 @@ public class MultiPID {
         }
     }
 
+    /**
+     *
+     * @since 0.1.0
+     */
     public void applyAllConfigs() {
         for (int i = 0; i < configs.length; i++) {
             configs[i].applyTo(motor, i);
         }
     }
 
+    /**
+     *
+     * @since 0.1.0
+     */
     public enum Type {
         POSITION, VELOCITY, ACCELERATION
     }

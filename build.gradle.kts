@@ -32,8 +32,10 @@ dependencies {
     api("edu.wpi.first.cscore:cscore-java:$wpiVersion")
     api("edu.wpi.first.cameraserver:cameraserver-java:$wpiVersion")
     api("edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:$wpiVersion")
-    api("com.ctre.phoenix:wpiapi-java:5.19.4")
-    api("com.ctre.phoenix:api-java:5.19.4")
+
+    val ctreVersion = "5.19.4"
+    api("com.ctre.phoenix:wpiapi-java:$ctreVersion")
+    api("com.ctre.phoenix:api-java:$ctreVersion")
 }
 
 release {

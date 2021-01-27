@@ -27,10 +27,21 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
+/**
+ *
+ * @since 0.1.0
+ */
 public class MotorUtil {
     private MotorUtil() {
     }
 
+    /**
+     * @param sensor
+     * @param pidConfig
+     * @param maxVel
+     * @param motors
+     * @since 0.1.0
+     */
     public static void setupMotionMagic(FeedbackDevice sensor, PIDConfig pidConfig, int maxVel, BaseTalon... motors) {
         int periodMs = 10;
         int timeoutMs = 10;
@@ -62,6 +73,12 @@ public class MotorUtil {
         }
     }
 
+    /**
+     * @param forward
+     * @param reverse
+     * @param motors
+     * @since 0.1.0
+     */
     public static void setSoftLimits(int forward, int reverse, BaseTalon... motors) {
         for (BaseTalon motor : motors) {
             motor.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.NormallyOpen);

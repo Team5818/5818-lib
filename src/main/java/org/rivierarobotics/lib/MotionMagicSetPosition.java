@@ -27,6 +27,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
+/**
+ *
+ * @param <T>
+ * @since 0.1.0
+ */
 public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase {
     protected final T subsystem;
     protected final DoubleSupplier getPosition;
@@ -38,6 +43,17 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
     protected final double timeout;
     private double start;
 
+    /**
+     * @param subsystem
+     * @param getPosition
+     * @param setPosition
+     * @param forwardLimit
+     * @param backLimit
+     * @param setPoint
+     * @param maxError
+     * @param timeout
+     * @since 0.1.0
+     */
     public MotionMagicSetPosition(T subsystem, DoubleSupplier getPosition, DoubleConsumer setPosition,
                                   double forwardLimit, double backLimit, double setPoint, double maxError, double timeout) {
         this.subsystem = subsystem;
@@ -51,17 +67,29 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
         addRequirements(subsystem);
     }
 
+    /**
+     *
+     * @since 0.1.0
+     */
     public MotionMagicSetPosition(T subsystem, DoubleSupplier getPosition, DoubleConsumer setPosition,
                                   double setPoint, double maxError, double timeout) {
         this(subsystem, getPosition, setPosition, -1, -1, setPoint, maxError, timeout);
     }
 
+    /**
+     *
+     * @since 0.1.0
+     */
     @Override
     public void initialize() {
         setPosition.accept(setPoint);
         start = Timer.getFPGATimestamp();
     }
 
+    /**
+     * @return
+     * @since 0.1.0
+     */
     @Override
     public boolean isFinished() {
         double pos = getPosition.getAsDouble();
