@@ -23,6 +23,11 @@ package org.rivierarobotics.lib;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 /**
+ * Stores a PIDF configuration through loop gain constants.<br><br>
+ *
+ * Terms may be accessed or changed through standard getters/setters.
+ * Contains helper method to apply terms to a given CTRE motor controller.
+ * Should be used in all places where PIDF loops are needed.
  *
  * @since 0.1.0
  */
@@ -34,11 +39,16 @@ public class PIDConfig {
     private double pidRange;
 
     /**
-     * @param kP
-     * @param kI
-     * @param kD
-     * @param kF
-     * @param pidRange
+     * Constructs a PID configuration with the specified loop gain constants.
+     *
+     * @param kP proportional gain; output proportional to current error.
+     * @param kI integral gain; output based on accumulated error to exponentiate kP.
+     * @param kD derivative gain; typically used for damping.
+     * @param kF feed forward constant.
+     * @param pidRange maximum (negated to get minimum) motor movement
+     *                 percentage allowed for PIDF loop to set [-1, 1].
+     *
+     * @see #applyTo(BaseTalon, int)
      * @since 0.1.0
      */
     public PIDConfig(double kP, double kI, double kD, double kF, double pidRange) {
@@ -50,6 +60,12 @@ public class PIDConfig {
     }
 
     /**
+     * Constructs a PID configuration with the specified loop gain constants.
+     * Has a default range value of [-1, 1] or full range.<br><br>
+     *
+     * Wrapper for {@link #PIDConfig(double, double, double, double, double)}.
+     *
+     * @see #PIDConfig(double, double, double, double, double)
      * @since 0.1.0
      */
     public PIDConfig(double kP, double kI, double kD, double kF) {
@@ -57,6 +73,12 @@ public class PIDConfig {
     }
 
     /**
+     * Constructs a PID configuration with the specified loop gain constants.
+     * Has a default range value of [-1, 1] or full range and no feed forward.<br><br>
+     *
+     * Wrapper for {@link #PIDConfig(double, double, double, double, double)}.
+     *
+     * @see #PIDConfig(double, double, double, double, double)
      * @since 0.1.0
      */
     public PIDConfig(double kP, double kI, double kD) {
@@ -109,8 +131,19 @@ public class PIDConfig {
     }
 
     /**
-     * @param motor
-     * @param slotIdx
+     * Applies the current PIDF configuration to a given CTRE motor controller.
+     *
+     * The slot number is [0, 3] as dictated by the 4 slots per controller.
+     * Configurations only need to be applied once, then switched between with
+     * <code>motor.selectProfileSlot(idx, 0)</code>. Note that the 0 represents
+     * the primary controller. It is suggested to remain on the primary for quick
+     * switching (i.e. position to velocity) and resort to auxiliary if more
+     * than four configurations are needed (unlikely) or two controllers need
+     * to be running simultaneously (not recommended).
+     *
+     * @param motor the CTRE motor to apply the current configuration to.
+     * @param slotIdx the index of the profile slot to apply the configuration to.
+     *
      * @since 0.1.0
      */
     public void applyTo(BaseTalon motor, int slotIdx) {

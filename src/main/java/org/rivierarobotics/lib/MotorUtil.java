@@ -28,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 /**
+ * Utility methods relating to robot motor movement.
  *
  * @since 0.1.0
  */
@@ -36,10 +37,23 @@ public class MotorUtil {
     }
 
     /**
-     * @param sensor
-     * @param pidConfig
-     * @param maxVel
-     * @param motors
+     * Configures Motion Magic motion profiling on given CTRE
+     * Talon, Victor, or Falcon controlled motors.<br><br>
+     *
+     * Uses the internal 1 kHz clock of the controller instead of the 20 ms
+     * RoboRio clock. This is recommended as it removes the need to make
+     * custom motion profiles, leading to faster turnaround times on subsystems.
+     * As a warning, this first resets all motor settings to factory default
+     * and then configures the feedback sensor based on the passed value.
+     * As such is is recommended that this be the first motor configuration call
+     * in any subsystem. Note that maximum velocity and acceleration will
+     * not be set if <code>maxVel == 0</code>.
+     *
+     * @param sensor the sensor attached to the controller used for loop feedback.
+     * @param pidConfig the PIDF and range values to use on the controller.
+     * @param maxVel maximum velocity of the profile in ticks per 100ms.
+     * @param motors the motors for which Motion Magic is enabled on.
+     *
      * @since 0.1.0
      */
     public static void setupMotionMagic(FeedbackDevice sensor, PIDConfig pidConfig, int maxVel, BaseTalon... motors) {
@@ -74,9 +88,16 @@ public class MotorUtil {
     }
 
     /**
-     * @param forward
-     * @param reverse
-     * @param motors
+     * Places limits on the range of CTRE Talon, Victor, or Falcon controlled motors.<br><br>
+     *
+     * Limits are defined in ticks and apply to both power and positional control sets.
+     * It is still recommended that both are limited manually if possible. Note that
+     * this is a hard stop (despite being a soft limit) and does not account for velocity
+     * accumulated while moving. This value does not persist after power-off.
+     *
+     * @param forward the maximum ticks in the forward/positive direction.
+     * @param reverse the minimum ticks in the reverse/backward/negative direction.
+     * @param motors the motors to apply the soft limits onto.
      * @since 0.1.0
      */
     public static void setSoftLimits(int forward, int reverse, BaseTalon... motors) {

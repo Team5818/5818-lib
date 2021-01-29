@@ -23,8 +23,16 @@ package org.rivierarobotics.lib;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 /**
+ * Manages multiple different PID configurations on a
+ * single CTRE motor controller.<br><br>
+ *
+ * Most often used for separate position and velocity PID
+ * constants though it has the capability to be used for
+ * any number of configurations. Uses the {@link PIDConfig}
+ * system to store PID modes/constant sets.
  *
  * @see PIDConfig
+ * @see MultiPID.Type
  * @since 0.1.0
  */
 public class MultiPID {
@@ -33,20 +41,34 @@ public class MultiPID {
     private int currentIdx = 0;
 
     /**
-     * @param motor
-     * @param configs
+     * Constructs a new PID manager with n set PID constant configurations
+     * and a single CTRE motor controller.<br><br>
+     *
+     * Automatically applies the configurations in passed order
+     * and selects the 0-th configuration to be used.
+     *
+     * @param motor the CTRE motor controller to manage.
+     * @param configs the configurations to set on the controller.
      * @since 0.1.0
      */
     public MultiPID(BaseTalon motor, PIDConfig... configs) {
         this.motor = motor;
         this.configs = configs;
-        applyAllConfigs();
+        for (int i = 0; i < configs.length; i++) {
+            configs[i].applyTo(motor, i);
+        }
         motor.selectProfileSlot(0, 0);
     }
 
     /**
-     * @param type
-     * @return
+     * Gets the configuration associated with a physics movement type.<br><br>
+     *
+     * Wrapper for {@link #getConfig(int)}.
+     *
+     * @param type the type identifier of the configuration to get.
+     *
+     * @see #getConfig(int)
+     * @see MultiPID.Type
      * @since 0.1.0
      */
     public PIDConfig getConfig(MultiPID.Type type) {
@@ -54,8 +76,11 @@ public class MultiPID {
     }
 
     /**
-     * @param idx
-     * @return
+     * Gets the stored configuration at a certain index.
+     *
+     * @param idx the index to retrieve from.
+     * @return the stored PID configuration.
+     *
      * @since 0.1.0
      */
     public PIDConfig getConfig(int idx) {
@@ -63,7 +88,14 @@ public class MultiPID {
     }
 
     /**
-     * @param type
+     * Selects the configuration associated with a physics movement type.<br><br>
+     *
+     * Wrapper for {@link #selectConfig(int)}.
+     *
+     * @param type the type identifier of the configuration to get.
+     *
+     * @see #selectConfig(int)
+     * @see MultiPID.Type
      * @since 0.1.0
      */
     public void selectConfig(MultiPID.Type type) {
@@ -71,7 +103,10 @@ public class MultiPID {
     }
 
     /**
-     * @param idx
+     * Selects the configuration stored at a certain index.
+     *
+     * @param idx the index to select at.
+     *
      * @since 0.1.0
      */
     public void selectConfig(int idx) {
@@ -82,16 +117,8 @@ public class MultiPID {
     }
 
     /**
-     *
-     * @since 0.1.0
-     */
-    public void applyAllConfigs() {
-        for (int i = 0; i < configs.length; i++) {
-            configs[i].applyTo(motor, i);
-        }
-    }
-
-    /**
+     * Represents physics movement types (position, velocity, and acceleration)
+     * for use in <code>MultiPID</code> managers.
      *
      * @since 0.1.0
      */

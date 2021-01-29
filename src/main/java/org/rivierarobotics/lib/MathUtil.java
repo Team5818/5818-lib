@@ -21,6 +21,7 @@
 package org.rivierarobotics.lib;
 
 /**
+ * Utility methods relating to robot mathematics.
  *
  * @since 0.1.0
  */
@@ -32,8 +33,15 @@ public class MathUtil {
     }
 
     /**
-     * @param val
+     * Fits value between -1 and 1 but eliminates noise between the deadband.
+     * Uses a system default value for the deadband. <br><br>
+     *
+     * Wrapper for {@link #fitDeadband(double, double)}.
+     *
+     * @param val the value to fit inside the deadband.
      * @return
+     *
+     * @see #fitDeadband(double, double)
      * @since 0.1.0
      */
     public static double fitDeadband(double val) {
@@ -41,9 +49,17 @@ public class MathUtil {
     }
 
     /**
-     * @param val
-     * @param deadband
-     * @return
+     * Fits value between -1 and 1 but eliminates noise between the deadband. <br><br>
+     *
+     * Generally used for eliminating noise in joystick readings by setting the
+     * output to zero when within a certain deadband amount of zero. Non-joystick
+     * values are also limited between -1 and 1 so as to use in a motor set.
+     *
+     * @param val the value to fit inside the valid range and outside the deadband.
+     * @param deadband the amount of tolerance around zero in which
+     *                 values are set to zero.
+     * @return the value fitted to the range.
+     *
      * @since 0.1.0
      */
     public static double fitDeadband(double val, double deadband) {
@@ -66,6 +82,15 @@ public class MathUtil {
     }
 
     /**
+     * Wraps a circular angle value to within one circle. Uses a standard
+     * 360 degrees per circle, angle is passed in degrees.<br><br>
+     *
+     * Wrapper for {@link #wrapToCircle(double, int)}
+     *
+     * @param angle the number of degrees to wrap.
+     * @return the [0, 360] degrees angle after being wrapped.
+     *
+     * @see #wrapToCircle(double, int)
      * @since 0.1.0
      */
     public static double wrapToCircle(double angle) {
@@ -73,21 +98,29 @@ public class MathUtil {
     }
 
     /**
-     * @param angle
-     * @param fullCircle
-     * @return
+     * Wraps a circular angle value to within one circle.<br><br>
+     *
+     * Customizable number of angle units per circle. Angle is
+     * equivalent and wrapped to the positive [0, fullCircle] range.
+     *
+     * @param angle the raw angle units to wrap.
+     * @param fullCircle the number of angle units to be one circle.
+     * @return the wrapped angle in corresponding angle units.
+     *
      * @since 0.1.0
      */
     public static double wrapToCircle(double angle, int fullCircle) {
         angle %= fullCircle;
-        if (angle < 0) {
-            return fullCircle + angle;
-        } else {
-            return angle;
-        }
+        return angle < 0 ? fullCircle + angle : angle;
     }
 
     /**
+     * Fits a value between an upper and lower limit.
+     * Creates the lower limit by negating the passed value.<br><br>
+     *
+     * Wrapper for {@link #limit(double, double, double)}.
+     *
+     * @see #limit(double, double, double)
      * @since 0.1.0
      */
     public static double limit(double value, double minmax) {
@@ -95,10 +128,13 @@ public class MathUtil {
     }
 
     /**
-     * @param value
-     * @param min
-     * @param max
-     * @return
+     * Fits a value between an upper and lower limit.
+     *
+     * @param value the value to fit between the limits.
+     * @param min the minimum value that the output may have, inclusive.
+     * @param max the maximum value that the output may have, inclusive.
+     * @return the value fitted between the minimum and maximum limits.
+     *
      * @since 0.1.0
      */
     public static double limit(double value, double min, double max) {
@@ -112,6 +148,12 @@ public class MathUtil {
     }
 
     /**
+     * Converts degrees angles to ticks values.
+     * Uses a standard 4096 ticks per circle.<br><br>
+     *
+     * Wrapper for {@link #degreesToTicks(double, double)}.
+     *
+     * @see #degreesToTicks(double, double)
      * @since 0.1.0
      */
     public static double degreesToTicks(double degrees) {
@@ -119,9 +161,13 @@ public class MathUtil {
     }
 
     /**
-     * @param degrees
-     * @param ticksPerDegree
-     * @return
+     * Converts degrees angles to ticks values.
+     * Customizable number of ticks per degree.
+     *
+     * @param degrees angle to convert into ticks.
+     * @param ticksPerDegree number of ticks per degree.
+     * @return the degrees angle as a tick value.
+     *
      * @since 0.1.0
      */
     public static double degreesToTicks(double degrees, double ticksPerDegree) {
@@ -129,6 +175,12 @@ public class MathUtil {
     }
 
     /**
+     * Converts ticks values to degrees angles.
+     * Uses a standard 4096 ticks per circle.<br><br>
+     *
+     * Wrapper for {@link #ticksToDegrees(double, double)}.
+     *
+     * @see #ticksToDegrees(double, double)
      * @since 0.1.0
      */
     public static double ticksToDegrees(double ticks) {
@@ -136,9 +188,13 @@ public class MathUtil {
     }
 
     /**
-     * @param ticks
-     * @param degreesPerTick
-     * @return
+     * Converts ticks values to degrees angles.
+     * Customizable number of degrees per tick.
+     *
+     * @param ticks tick value to convert into degrees.
+     * @param degreesPerTick number of degrees per tick.
+     * @return the ticks value as a degrees angle.
+     *
      * @since 0.1.0
      */
     public static double ticksToDegrees(double ticks, double degreesPerTick) {
@@ -146,10 +202,15 @@ public class MathUtil {
     }
 
     /**
-     * @param value
-     * @param target
-     * @param tolerance
-     * @return
+     * Checks if a value is within a certain tolerance of a target. Directions irrelevant.
+     *
+     * @param value the current value for which to check.
+     * @param target the target to check the value against.
+     * @param tolerance the tolerance (positive and negative directions)
+     *                  around the target that is acceptable error
+     *                  for the value to be "within tolerance".
+     * @return if the value is within tolerance of the target.
+     *
      * @since 0.1.0
      */
     public static boolean isWithinTolerance(double value, double target, double tolerance) {
@@ -157,14 +218,21 @@ public class MathUtil {
     }
 
     /**
-     * @param values
-     * @return
+     * Calculates the magnitude of a set of doubles.<br><br>
+     *
+     * Assumes passed values are vectors and subject
+     * to vector operations. For example, three values may
+     * represent the magnitude of a vector in R3.
+     *
+     * @param values the doubles to get the magnitude of.
+     * @return the combined magnitude of the values.
+     *
      * @since 0.1.0
      */
-    public static double getMagnitude(double...values) {
+    public static double getMagnitude(double... values) {
         double sum = 0;
-        for(double a: values) {
-            sum += a * a;
+        for (double d : values) {
+            sum += d * d;
         }
         return Math.sqrt(sum);
     }
