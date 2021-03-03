@@ -85,12 +85,12 @@ public class MathUtil {
      * Wraps a circular angle value to within one circle. Uses a standard
      * 360 degrees per circle, angle is passed in degrees.<br><br>
      *
-     * Wrapper for {@link #wrapToCircle(double, int)}
+     * Wrapper for {@link #wrapToCircle(double, double)}
      *
      * @param angle the number of degrees to wrap.
      * @return the [0, 360] degrees angle after being wrapped.
      *
-     * @see #wrapToCircle(double, int)
+     * @see #wrapToCircle(double, double)
      * @since 0.1.0
      */
     public static double wrapToCircle(double angle) {
@@ -109,7 +109,7 @@ public class MathUtil {
      *
      * @since 0.1.0
      */
-    public static double wrapToCircle(double angle, int fullCircle) {
+    public static double wrapToCircle(double angle, double fullCircle) {
         angle %= fullCircle;
         return angle < 0 ? fullCircle + angle : angle;
     }

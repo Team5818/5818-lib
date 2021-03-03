@@ -26,9 +26,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
-
 /**
  * Helper command to set a position using a Motion Magic enabled CTRE motor controller.<br><br>
  *
@@ -38,7 +35,7 @@ import java.util.function.DoubleSupplier;
  * number to make the command run until it is within tolerance only
  * (i.e. remove the timeout, not suggested). Similarly, setting front
  * and back limits to -1 respectively disable them. This is compatible
- * with {@link MotorUtil#setSoftLimits(int, int, BaseTalon...)}.
+ * with {@link MotorUtil#setSoftLimits(double, double, BaseTalon...)}.
  * Behavior on limit overrun is to stop the command.<br><br>
  *
  * It is also suggested that this be a supertype for other wrapper commands.
@@ -46,15 +43,13 @@ import java.util.function.DoubleSupplier;
  *
  * @param <T> the subsystem type; preserves methods for overriding in subclasses.
  *
- * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, int, BaseTalon...)
+ * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, double, BaseTalon...)
  * @since 0.1.0
  */
-public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase {
+public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase {
     protected final T subsystem;
-    protected final DoubleSupplier getPosition;
-    protected final DoubleConsumer setPosition;
     protected final double forwardLimit;
-    protected final double backLimit;
+    protected final double backwardLimit;
     protected final double maxError;
     protected final double setPoint;
     protected final double timeout;
@@ -64,27 +59,22 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
      * Constructs the command which goes to a position using Motion Magic.<br><br>
      *
      * All units should by default be in ticks. However, they may be any unit so long
-     * as all suppliers, consumers, and passed values use that same unit. This may include
+     * as all passed values and method overrides use that same unit. This may include
      * angles (degrees or radians), positions (meters or inches), etc.
      *
      * @param subsystem the WPILib registered subsystem contains a CTRE motor configured to use MotionMagic.
-     * @param getPosition a supplier that retrieves the position to feed to the controller.
-     * @param setPosition a consumer that sets the setpoint on the controller.
-     * @param forwardLimit maximum forward position allowed.
+     * @param fwdLimit maximum forward position allowed.
      * @param backLimit minimum backward position allowed.
      * @param setPoint target setpoint to move towards.
      * @param maxError maximum error allowed from the setpoint to consider "at target".
-     * @param timeout maximum allowed time for command completion.
+     * @param timeout maximum allowed time for command completion in seconds.
      *
      * @since 0.1.0
      */
-    public MotionMagicSetPosition(T subsystem, DoubleSupplier getPosition, DoubleConsumer setPosition,
-                                  double forwardLimit, double backLimit, double setPoint, double maxError, double timeout) {
+    public MotionMagicSetPosition(T subsystem, double fwdLimit, double backLimit, double setPoint, double maxError, double timeout) {
         this.subsystem = subsystem;
-        this.getPosition = getPosition;
-        this.setPosition = setPosition;
-        this.forwardLimit = forwardLimit;
-        this.backLimit = backLimit;
+        this.forwardLimit = fwdLimit;
+        this.backwardLimit = backLimit;
         this.maxError = maxError;
         this.setPoint = setPoint;
         this.timeout = timeout;
@@ -95,14 +85,13 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
      * Constructs the command which goes to a position using Motion Magic.
      * Disables forward and backward limits.<br><br>
      *
-     * Wrapper for {@link #MotionMagicSetPosition(SubsystemBase, DoubleSupplier, DoubleConsumer, double, double, double, double, double)}.
+     * Wrapper for {@link #MotionMagicSetPosition(SubsystemBase, double, double, double, double, double)}.
      *
-     * @see #MotionMagicSetPosition(SubsystemBase, DoubleSupplier, DoubleConsumer, double, double, double, double, double)
+     * @see #MotionMagicSetPosition(SubsystemBase, double, double, double, double, double)
      * @since 0.1.0
      */
-    public MotionMagicSetPosition(T subsystem, DoubleSupplier getPosition, DoubleConsumer setPosition,
-                                  double setPoint, double maxError, double timeout) {
-        this(subsystem, getPosition, setPosition, -1, -1, setPoint, maxError, timeout);
+    public MotionMagicSetPosition(T subsystem, double setPoint, double maxError, double timeout) {
+        this(subsystem, -1, -1, setPoint, maxError, timeout);
     }
 
     /**
@@ -116,8 +105,35 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
      */
     @Override
     public void initialize() {
-        setPosition.accept(setPoint);
+        setPosition(setPoint);
         start = Timer.getFPGATimestamp();
+    }
+
+    /**
+     * Gets the position (default in ticks) of the subsystem.
+     *
+     * @return the current position.
+     * @since 0.1.1
+     */
+    public abstract double getPosition();
+
+    /**
+     * Sets the position (default in ticks) to the subsystem.
+     *
+     * @param setPoint the setpoint to set.
+     * @since 0.1.1
+     */
+    public abstract double setPosition(double setPoint);
+
+    /**
+     * Checks if the passed timeout duration has elapsed since start.
+     *
+     * @return if the timeout period has elapsed
+     *
+     * @since 0.1.1
+     */
+    public boolean hasTimedOut() {
+        return Timer.getFPGATimestamp() - start > timeout;
     }
 
     /**
@@ -131,8 +147,8 @@ public class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase
      */
     @Override
     public boolean isFinished() {
-        double pos = getPosition.getAsDouble();
-        return MathUtil.isWithinTolerance(pos, setPoint, maxError) || (Timer.getFPGATimestamp() - start) > timeout
-                || (forwardLimit != 1 && pos >= forwardLimit) || (backLimit != -1 && pos <= backLimit);
+        double pos = getPosition();
+        return MathUtil.isWithinTolerance(pos, setPoint, maxError) || hasTimedOut()
+                || (forwardLimit != 1 && getPosition() >= forwardLimit) || (backwardLimit != -1 && pos <= backwardLimit);
     }
 }
