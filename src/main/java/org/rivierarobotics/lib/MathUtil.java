@@ -39,7 +39,7 @@ public class MathUtil {
      * Wrapper for {@link #fitDeadband(double, double)}.
      *
      * @param val the value to fit inside the deadband.
-     * @return
+     * @return the value fitted to the range.
      *
      * @see #fitDeadband(double, double)
      * @since 0.1.0

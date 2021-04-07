@@ -123,7 +123,7 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
      * @param setPoint the setpoint to set.
      * @since 0.1.1
      */
-    public abstract double setPosition(double setPoint);
+    public abstract void setPosition(double setPoint);
 
     /**
      * Checks if the passed timeout duration has elapsed since start.

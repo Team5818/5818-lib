@@ -87,6 +87,7 @@ public class RSTable {
      *
      * @param name the name of the key/value pair to add.
      * @param value the value of the key/value pair to add.
+     * @return the current table with entries added.
      *
      * @since 0.1.0
      */
