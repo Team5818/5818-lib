@@ -236,4 +236,51 @@ public class MathUtil {
         }
         return Math.sqrt(sum);
     }
+
+    /**
+     * Calculates bounded motor outputs for an arcade drive system. <br><br>
+     *
+     * Turns using the x input and fwd/back using the y.
+     * Generally used to emulate the feel of driving in an "arcade"
+     * instead of standard tank drive (west coast motor configuration).
+     * May pass any input, most often used with two joysticks:
+     * left driver Y axis and right driver X axis.
+     *
+     * @param x joystick input [-1, 1] used for turning.
+     * @param y joystick input [-1, 1] used for forward/backward movement.
+     * @return power set [-1, 1] for left (index 0)
+     *         and right (index 1) drive sides
+     *
+     * @since 0.1.2
+     */
+    public static double[] arcadeDrive(double x, double y) {
+        double left;
+        double right;
+
+        double max = Math.max(Math.abs(x), Math.abs(y));
+        double diff = y - x;
+        double sum = y + x;
+        if (y > 0) {
+            if (x > 0) {
+                left = max;
+                right = diff;
+            } else {
+                left = sum;
+                right = max;
+            }
+        } else {
+            if (x > 0) {
+                left = sum;
+                right = -max;
+            } else {
+                left = -max;
+                right = diff;
+            }
+        }
+
+        return new double[] {
+            left,
+            right
+        };
+    }
 }

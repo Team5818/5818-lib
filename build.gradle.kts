@@ -1,17 +1,18 @@
+import org.cadixdev.gradle.licenser.LicenseExtension
+
 plugins {
-    `java-library`
-    id("com.techshroom.incise-blue") version "0.5.7"
     id("net.researchgate.release") version "2.8.1"
-    id("com.jfrog.bintray") version "1.8.4"
+    id("org.cadixdev.licenser") version "0.5.1"
+    `java-library`
     `maven-publish`
 }
 
-inciseBlue {
-    ide()
-    license()
-    util {
-        javaVersion = JavaVersion.VERSION_11
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 repositories {
@@ -38,46 +39,34 @@ dependencies {
     api("com.ctre.phoenix:api-java:$ctreVersion")
 }
 
+configure<LicenseExtension> {
+    header = rootProject.file("HEADER.txt")
+    (this as ExtensionAware).extra.apply {
+        set("name", rootProject.name)
+        for (key in listOf("organization", "url")) {
+            set(key, rootProject.property(key))
+        }
+    }
+}
+
 release {
     tagTemplate = "v\${version}"
     buildTasks = listOf("build")
 }
 
-tasks.named("afterReleaseBuild") {
-    dependsOn("bintrayUpload")
-}
-
-java.withJavadocJar()
-java.withSourcesJar()
-
 publishing {
     publications {
         register<MavenPublication>("library") {
-            pom {
-                name.set("5818-lib")
-            }
-            groupId = "org.rivierarobotics"
-            artifactId = "5818-lib"
-            version = project.version.toString()
-
             from(components["java"])
         }
     }
-}
-
-bintray {
-    user = System.getenv("BINTRAY_USER") ?: findProperty("bintray.user")?.toString()
-    key = System.getenv("BINTRAY_KEY") ?: findProperty("bintray.password")?.toString()
-    setPublications("library")
-    with(pkg) {
-        repo = "maven-release"
-        name = "5818-lib"
-        userOrg = "team5818"
-        vcsUrl = "https://github.com/Team5818/5818-lib.git"
-        publish = true
-        setLicenses("GPL-3.0-or-later")
-        with(version) {
-            name = project.version.toString()
+    repositories {
+        maven {
+            val releasesRepoUrl = "https://maven.octyl.net/repository/team5818-releases"
+            val snapshotsRepoUrl = "https://maven.octyl.net/repository/team5818-snapshots"
+            name = "octylNet"
+            url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+            credentials(PasswordCredentials::class)
         }
     }
 }
