@@ -20,11 +20,9 @@
 
 package org.rivierarobotics.lib;
 
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-
 /**
- * Manages multiple different PID configurations on a
- * single CTRE motor controller.<br><br>
+ * Base class to manage multiple different PID
+ * configurations.<br><br>
  *
  * Most often used for separate position and velocity PID
  * constants though it has the capability to be used for
@@ -32,32 +30,26 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
  * system to store PID modes/constant sets.
  *
  * @see PIDConfig
- * @see MultiPID.Type
- * @since 0.1.0
+ * @see Mode
+ * @see CTREMultiPID
+ * @see WPIMultiPID
+ * @since 0.2.0
  */
-public class MultiPID {
-    private final BaseTalon motor;
-    private final PIDConfig[] configs;
-    private int currentIdx = 0;
+public abstract class PIDStore {
+    protected final PIDConfig[] configs;
+    protected int currentIdx;
 
     /**
-     * Constructs a new PID manager with n set PID constant configurations
-     * and a single CTRE motor controller.<br><br>
+     * Constructs a new PID manager with n set PID constant configurations.
+     * Automatically selects the first index.
      *
-     * Automatically applies the configurations in passed order
-     * and selects the 0-th configuration to be used.
-     *
-     * @param motor the CTRE motor controller to manage.
      * @param configs the configurations to set on the controller.
-     * @since 0.1.0
+     *
+     * @since 0.2.0
      */
-    public MultiPID(BaseTalon motor, PIDConfig... configs) {
-        this.motor = motor;
+    public PIDStore(PIDConfig[] configs) {
         this.configs = configs;
-        for (int i = 0; i < configs.length; i++) {
-            configs[i].applyTo(motor, i);
-        }
-        motor.selectProfileSlot(0, 0);
+        selectConfig(0);
     }
 
     /**
@@ -65,14 +57,15 @@ public class MultiPID {
      *
      * Wrapper for {@link #getConfig(int)}.
      *
-     * @param type the type identifier of the configuration to get.
+     * @param mode the type identifier of the configuration to get.
+     * @return the stored PID configuration.
      *
      * @see #getConfig(int)
-     * @see MultiPID.Type
-     * @since 0.1.0
+     * @see Mode
+     * @since 0.2.0
      */
-    public PIDConfig getConfig(MultiPID.Type type) {
-        return getConfig(type.ordinal());
+    public PIDConfig getConfig(Mode mode) {
+        return getConfig(mode.ordinal());
     }
 
     /**
@@ -81,7 +74,7 @@ public class MultiPID {
      * @param idx the index to retrieve from.
      * @return the stored PID configuration.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      */
     public PIDConfig getConfig(int idx) {
         return configs[idx];
@@ -92,37 +85,39 @@ public class MultiPID {
      *
      * Wrapper for {@link #selectConfig(int)}.
      *
-     * @param type the type identifier of the configuration to get.
+     * @param mode the type identifier of the configuration to get.
      *
      * @see #selectConfig(int)
-     * @see MultiPID.Type
-     * @since 0.1.0
+     * @see Mode
+     * @since 0.2.0
      */
-    public void selectConfig(MultiPID.Type type) {
-        selectConfig(type.ordinal());
+    public void selectConfig(Mode mode) {
+        selectConfig(mode.ordinal());
     }
 
     /**
      * Selects the configuration stored at a certain index.
      *
      * @param idx the index to select at.
+     * @return if the selected index changed from the previous value.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      */
-    public void selectConfig(int idx) {
-        if (currentIdx != idx) {
-            motor.selectProfileSlot(idx, 0);
+    public boolean selectConfig(int idx) {
+        boolean changedIdx = currentIdx != idx;
+        if (changedIdx) {
             currentIdx = idx;
         }
+        return changedIdx;
     }
 
     /**
      * Represents physics movement types (position, velocity, and acceleration)
      * for use in <code>MultiPID</code> managers.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      */
-    public enum Type {
+    public enum Mode {
         POSITION, VELOCITY, ACCELERATION
     }
 }

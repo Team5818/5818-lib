@@ -98,6 +98,7 @@ public class MotorUtil {
      * @param forward the maximum ticks in the forward/positive direction.
      * @param reverse the minimum ticks in the reverse/backward/negative direction.
      * @param motors the motors to apply the soft limits onto.
+     *
      * @since 0.1.0
      */
     public static void setSoftLimits(double forward, double reverse, BaseTalon... motors) {

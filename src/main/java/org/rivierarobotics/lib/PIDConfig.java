@@ -20,8 +20,6 @@
 
 package org.rivierarobotics.lib;
 
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
-
 /**
  * Stores a PIDF configuration through loop gain constants.<br><br>
  *
@@ -36,6 +34,7 @@ public class PIDConfig {
     private double kI;
     private double kD;
     private double kF;
+    private double tolerance;
     private double pidRange;
 
     /**
@@ -48,7 +47,6 @@ public class PIDConfig {
      * @param pidRange maximum (negated to get minimum) motor movement
      *                 percentage allowed for PIDF loop to set [-1, 1].
      *
-     * @see #applyTo(BaseTalon, int)
      * @since 0.1.0
      */
     public PIDConfig(double kP, double kI, double kD, double kF, double pidRange) {
@@ -101,6 +99,10 @@ public class PIDConfig {
         return kF;
     }
 
+    public double getTolerance() {
+        return tolerance;
+    }
+
     public double getRange() {
         return pidRange;
     }
@@ -125,31 +127,13 @@ public class PIDConfig {
         return this;
     }
 
-    public PIDConfig setRange(double pidRange) {
-        this.pidRange = pidRange;
+    public PIDConfig setTolerance(double tolerance) {
+        this.tolerance = tolerance;
         return this;
     }
 
-    /**
-     * Applies the current PIDF configuration to a given CTRE motor controller.
-     *
-     * The slot number is [0, 3] as dictated by the 4 slots per controller.
-     * Configurations only need to be applied once, then switched between with
-     * <code>motor.selectProfileSlot(idx, 0)</code>. Note that the 0 represents
-     * the primary controller. It is suggested to remain on the primary for quick
-     * switching (i.e. position to velocity) and resort to auxiliary if more
-     * than four configurations are needed (unlikely) or two controllers need
-     * to be running simultaneously (not recommended).
-     *
-     * @param motor the CTRE motor to apply the current configuration to.
-     * @param slotIdx the index of the profile slot to apply the configuration to.
-     *
-     * @since 0.1.0
-     */
-    public void applyTo(BaseTalon motor, int slotIdx) {
-        motor.config_kP(slotIdx, kP);
-        motor.config_kI(slotIdx, kI);
-        motor.config_kD(slotIdx, kD);
-        motor.config_kF(slotIdx, kF);
+    public PIDConfig setRange(double pidRange) {
+        this.pidRange = pidRange;
+        return this;
     }
 }
