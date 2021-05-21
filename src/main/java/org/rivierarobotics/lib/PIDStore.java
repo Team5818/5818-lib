@@ -138,7 +138,7 @@ public abstract class PIDStore {
      * Determine if the currently selected index is a valid
      * index in the configuration array.<br><br>
      *
-     * Invalid indices may occur when disabled <code>-1 < 0</code>
+     * Invalid indices may occur when disabled <code>-1 less than 0</code>
      * or if passed to <code>selectConfig(int idx)</code>.
      *
      * @return if the currently selected index is valid.
