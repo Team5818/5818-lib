@@ -24,7 +24,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
  * Helper command to set a position using a Motion Magic enabled CTRE motor controller.<br><br>
@@ -46,14 +46,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, double, BaseTalon...)
  * @since 0.1.0
  */
-public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends CommandBase {
+public abstract class MotionMagicSetPosition<T extends Subsystem> extends CommandBase {
     protected final T subsystem;
     protected final double forwardLimit;
     protected final double backwardLimit;
     protected final double maxError;
     protected final double setPoint;
     protected final double timeout;
-    private double start;
+    protected double startTime;
 
     /**
      * Constructs the command which goes to a position using Motion Magic.<br><br>
@@ -71,7 +71,8 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
      *
      * @since 0.1.0
      */
-    public MotionMagicSetPosition(T subsystem, double fwdLimit, double backLimit, double setPoint, double maxError, double timeout) {
+    public MotionMagicSetPosition(T subsystem, double fwdLimit, double backLimit,
+                                  double setPoint, double maxError, double timeout) {
         this.subsystem = subsystem;
         this.forwardLimit = fwdLimit;
         this.backwardLimit = backLimit;
@@ -85,9 +86,9 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
      * Constructs the command which goes to a position using Motion Magic.
      * Disables forward and backward limits.<br><br>
      *
-     * Wrapper for {@link #MotionMagicSetPosition(SubsystemBase, double, double, double, double, double)}.
+     * Wrapper for {@link #MotionMagicSetPosition(Subsystem, double, double, double, double, double)}.
      *
-     * @see #MotionMagicSetPosition(SubsystemBase, double, double, double, double, double)
+     * @see #MotionMagicSetPosition(Subsystem, double, double, double, double, double)
      * @since 0.1.0
      */
     public MotionMagicSetPosition(T subsystem, double setPoint, double maxError, double timeout) {
@@ -106,7 +107,7 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
     @Override
     public void initialize() {
         setPosition(setPoint);
-        start = Timer.getFPGATimestamp();
+        startTime = Timer.getFPGATimestamp();
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
      * @since 0.1.1
      */
     public boolean hasTimedOut() {
-        return Timer.getFPGATimestamp() - start > timeout;
+        return Timer.getFPGATimestamp() - startTime > timeout;
     }
 
     /**
@@ -149,6 +150,7 @@ public abstract class MotionMagicSetPosition<T extends SubsystemBase> extends Co
     public boolean isFinished() {
         double pos = getPosition();
         return MathUtil.isWithinTolerance(pos, setPoint, maxError) || hasTimedOut()
-                || (forwardLimit != 1 && getPosition() >= forwardLimit) || (backwardLimit != -1 && pos <= backwardLimit);
+                || (forwardLimit != -1 && pos >= forwardLimit)
+                || (backwardLimit != -1 && pos <= backwardLimit);
     }
 }

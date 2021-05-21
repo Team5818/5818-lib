@@ -112,6 +112,44 @@ public abstract class PIDStore {
     }
 
     /**
+     * Get the current movement mode/type configuration.<br><br>
+     *
+     * @return the current mode/type if the current
+     *         index is valid, otherwise null.
+     *
+     * @since 0.2.1
+     */
+    public Mode getCurrentMode() {
+        return isIdxValid() ? Mode.values()[currentIdx] : null;
+    }
+
+    /**
+     * Gets the current index of the selected controller.
+     *
+     * @return the current selected index.
+     *
+     * @since 0.2.1
+     */
+    public int getCurrentIndex() {
+        return currentIdx;
+    }
+
+    /**
+     * Determine if the currently selected index is a valid
+     * index in the configuration array.<br><br>
+     *
+     * Invalid indices may occur when disabled <code>-1 < 0</code>
+     * or if passed to <code>selectConfig(int idx)</code>.
+     *
+     * @return if the currently selected index is valid.
+     *
+     * @since 0.2.1
+     */
+    public boolean isIdxValid() {
+        return currentIdx > 0 && currentIdx < configs.length;
+    }
+
+    /**
      * Represents physics movement types (position, velocity, and acceleration)
      * for use in <code>MultiPID</code> managers.
      *

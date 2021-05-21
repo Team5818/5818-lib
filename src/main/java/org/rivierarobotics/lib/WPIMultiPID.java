@@ -22,6 +22,9 @@ package org.rivierarobotics.lib;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 
+import java.util.LinkedHashMap;
+import java.util.function.Supplier;
+
 /**
  * Manages multiple different PID configurations on
  * synchronous WPILib PID controllers. Requires that setpoints
@@ -37,6 +40,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
  */
 public class WPIMultiPID extends PIDStore {
     private final PIDController[] controllers;
+    private final LinkedHashMap<Integer, Supplier<Double>> feedbackSuppliers;
 
     /**
      * Constructs a new PID manager with n set PID constant configurations
@@ -52,6 +56,7 @@ public class WPIMultiPID extends PIDStore {
     public WPIMultiPID(PIDConfig... configs) {
         super(configs);
         this.controllers = new PIDController[configs.length];
+        this.feedbackSuppliers = new LinkedHashMap<>();
         for (int slotIdx = 0; slotIdx < configs.length; slotIdx++) {
             PIDConfig config = configs[slotIdx];
             controllers[slotIdx] = new PIDController(config.getP(), config.getI(), config.getD());
@@ -84,11 +89,55 @@ public class WPIMultiPID extends PIDStore {
      * @since 0.2.0
      */
     public boolean setSetpoint(double setpoint) {
-        boolean idxValid = isIdxValid();
+        boolean idxValid = super.isIdxValid();
         if (idxValid) {
             controllers[currentIdx].setSetpoint(setpoint);
         }
         return idxValid;
+    }
+
+    /**
+     * Provides a feedback supplier to the PID controller. <br><br>
+     *
+     * Wrapper for {@link #supplyFeedback(int, Supplier)}.
+     *
+     * @param mode the type identifier of the configuration to supply.
+     * @param feedback the supplier to provide feedback
+     *                 to the controller from.
+     *
+     * @see #supplyFeedback(int, Supplier)
+     * @since 0.2.1
+     */
+    public void supplyFeedback(Mode mode, Supplier<Double> feedback) {
+        supplyFeedback(mode.ordinal(), feedback);
+    }
+
+    /**
+     * Provides a feedback supplier to the PID controller.
+     * Will automatically switch between suppliers when modes are changed.<br><br>
+     *
+     * @param idx the index to supply to.
+     * @param feedback the supplier to provide feedback
+     *                 to the controller from.
+     *
+     * @since 0.2.1
+     */
+    public void supplyFeedback(int idx, Supplier<Double> feedback) {
+        feedbackSuppliers.put(idx, feedback);
+    }
+
+    /**
+     * Calculate the [-1, 1] motor power as given by the
+     * currently selected PID controller. Automatically applies
+     * feedback using provided suppliers.
+     *
+     * @return the [-1, 1] power to set to the motor.
+     *
+     * @since 0.2.1
+     */
+    public double calculate() {
+        Supplier<Double> feedback = feedbackSuppliers.get(currentIdx);
+        return feedback != null ? calculate(feedback.get()) : 0;
     }
 
     /**
@@ -104,24 +153,9 @@ public class WPIMultiPID extends PIDStore {
      * @since 0.2.0
      */
     public double calculate(double feedback) {
-        return !isIdxValid() ? 0 : MathUtil.limit(
+        return !super.isIdxValid() ? 0 : MathUtil.limit(
                 controllers[currentIdx].calculate(feedback),
                 configs[currentIdx].getRange()
         );
-    }
-
-    /**
-     * Determine if the currently selected index is a valid
-     * index in the configuration array.<br><br>
-     *
-     * Invalid indices may occur when disabled <code>-1 < 0</code>
-     * or if passed to <code>selectConfig(int idx)</code>.
-     *
-     * @return if the currently selected index is valid.
-     *
-     * @since 0.2.0
-     */
-    private boolean isIdxValid() {
-        return currentIdx > 0 && currentIdx < configs.length;
     }
 }

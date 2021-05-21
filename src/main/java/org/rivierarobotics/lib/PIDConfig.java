@@ -30,12 +30,12 @@ package org.rivierarobotics.lib;
  * @since 0.1.0
  */
 public class PIDConfig {
-    private double kP;
-    private double kI;
-    private double kD;
-    private double kF;
-    private double tolerance;
-    private double pidRange;
+    protected double kP;
+    protected double kI;
+    protected double kD;
+    protected double kF;
+    protected double tolerance;
+    protected double range;
 
     /**
      * Constructs a PID configuration with the specified loop gain constants.
@@ -44,17 +44,17 @@ public class PIDConfig {
      * @param kI integral gain; output based on accumulated error to exponentiate kP.
      * @param kD derivative gain; typically used for damping.
      * @param kF feed forward constant.
-     * @param pidRange maximum (negated to get minimum) motor movement
-     *                 percentage allowed for PIDF loop to set [-1, 1].
+     * @param range maximum (negated to get minimum) motor movement
+     *              percentage allowed for PIDF loop to set [-1, 1].
      *
      * @since 0.1.0
      */
-    public PIDConfig(double kP, double kI, double kD, double kF, double pidRange) {
+    public PIDConfig(double kP, double kI, double kD, double kF, double range) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.kF = kF;
-        this.pidRange = pidRange;
+        this.range = range;
     }
 
     /**
@@ -104,7 +104,7 @@ public class PIDConfig {
     }
 
     public double getRange() {
-        return pidRange;
+        return range;
     }
 
     public PIDConfig setP(double kP) {
@@ -133,7 +133,7 @@ public class PIDConfig {
     }
 
     public PIDConfig setRange(double pidRange) {
-        this.pidRange = pidRange;
+        this.range = pidRange;
         return this;
     }
 }
