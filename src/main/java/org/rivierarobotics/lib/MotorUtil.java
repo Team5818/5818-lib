@@ -38,6 +38,21 @@ public class MotorUtil {
 
     /**
      * Configures Motion Magic motion profiling on given CTRE
+     * Talon, Victor, or Falcon controlled motors.
+     * Has a default PID slot index of 0 (primary).<br><br>
+     *
+     * Wrapper for {@link #setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)}.
+     *
+     * @see #setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)
+     * @since 0.3.0
+     */
+    public static void setupMotionMagic(FeedbackDevice sensor, PIDConfig pidConfig,
+                                        MotionMagicConfig mmConfig, BaseTalon... motors) {
+        setupMotionMagic(sensor, pidConfig, 0, mmConfig, motors);
+    }
+
+    /**
+     * Configures Motion Magic motion profiling on given CTRE
      * Talon, Victor, or Falcon controlled motors.<br><br>
      *
      * Uses the internal 1 kHz clock of the controller instead of the 20 ms
@@ -51,38 +66,57 @@ public class MotorUtil {
      *
      * @param sensor the sensor attached to the controller used for loop feedback.
      * @param pidConfig the PIDF and range values to use on the controller.
-     * @param maxVel maximum velocity of the profile in ticks per 100ms.
+     * @param slotIdx the PID profile slot this configuration applies to.
+     * @param mmConfig the specific non-PID configuration options for this controller.
      * @param motors the motors for which Motion Magic is enabled on.
      *
+     * @see PIDConfig
+     * @see MotionMagicConfig
      * @since 0.1.0
      */
-    public static void setupMotionMagic(FeedbackDevice sensor, PIDConfig pidConfig, double maxVel, BaseTalon... motors) {
-        int periodMs = 10;
-        int timeoutMs = 10;
+    public static void setupMotionMagic(FeedbackDevice sensor, PIDConfig pidConfig, int slotIdx,
+                                        MotionMagicConfig mmConfig, BaseTalon... motors) {
         for (BaseTalon motor : motors) {
-            motor.configFactoryDefault();
-            motor.selectProfileSlot(0, 0);
-            motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0, periodMs, timeoutMs);
-            motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic, periodMs, timeoutMs);
-            if (sensor == FeedbackDevice.PulseWidthEncodedPosition || sensor == FeedbackDevice.IntegratedSensor) {
-                motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, periodMs, timeoutMs);
-                motor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, periodMs, timeoutMs);
+            if (mmConfig.doReset()) {
+                motor.configFactoryDefault();
             }
-            motor.configSelectedFeedbackSensor(sensor, 0, timeoutMs);
+            motor.selectProfileSlot(slotIdx, 0);
+            motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,
+                    mmConfig.getPeriod(), mmConfig.getTimeout());
+            motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,
+                    mmConfig.getPeriod(), mmConfig.getTimeout());
+            if (sensor == FeedbackDevice.PulseWidthEncodedPosition
+                    || sensor == FeedbackDevice.IntegratedSensor) {
+                motor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth,
+                        mmConfig.getPeriod(), mmConfig.getTimeout());
+            }
+            for (int statusFrame : mmConfig.getStatusFrames()) {
+                motor.setStatusFramePeriod(statusFrame, mmConfig.getPeriod(), mmConfig.getTimeout());
+            }
+            motor.configSelectedFeedbackSensor(sensor, 0, mmConfig.getTimeout());
 
             motor.configNominalOutputForward(0);
             motor.configNominalOutputReverse(0);
             motor.configPeakOutputForward(pidConfig.getRange());
             motor.configPeakOutputReverse(-pidConfig.getRange());
 
-            motor.config_kP(0, pidConfig.getP());
-            motor.config_kI(0, pidConfig.getI());
-            motor.config_kD(0, pidConfig.getD());
-            motor.config_kF(0, pidConfig.getF());
+            motor.config_kP(slotIdx, pidConfig.getP());
+            motor.config_kI(slotIdx, pidConfig.getI());
+            motor.config_kD(slotIdx, pidConfig.getD());
+            motor.config_kF(slotIdx, pidConfig.getF());
 
-            if (maxVel != 0) {
-                motor.configMotionCruiseVelocity(maxVel);
-                motor.configMotionAcceleration(maxVel);
+            if (mmConfig.getIntegralZone() != null) {
+                motor.config_IntegralZone(slotIdx, mmConfig.getIntegralZone(), mmConfig.getTimeout());
+            }
+            if (mmConfig.getSCurveStrength() != null) {
+                motor.configMotionSCurveStrength(mmConfig.getSCurveStrength(), mmConfig.getTimeout());
+            }
+
+            if (mmConfig.getMaxVel() != null) {
+                motor.configMotionCruiseVelocity(mmConfig.getMaxVel());
+            }
+            if (mmConfig.getMaxAccel() != null) {
+                motor.configMotionAcceleration(mmConfig.getMaxAccel());
             }
         }
     }

@@ -43,7 +43,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  *
  * @param <T> the subsystem type; preserves methods for overriding in subclasses.
  *
- * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, double, BaseTalon...)
+ * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)
  * @since 0.1.0
  */
 public abstract class MotionMagicSetPosition<T extends Subsystem> extends CommandBase {
