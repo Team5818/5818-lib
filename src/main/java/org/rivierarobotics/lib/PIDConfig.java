@@ -21,11 +21,11 @@
 package org.rivierarobotics.lib;
 
 /**
- * Stores a PIDF configuration through loop gain constants.<br><br>
+ * <p>Stores a PIDF configuration through loop gain constants.</p>
  *
- * Terms may be accessed or changed through standard getters/setters.
+ * <p>Terms may be accessed or changed through standard getters/setters.
  * Contains helper method to apply terms to a given CTRE motor controller.
- * Should be used in all places where PIDF loops are needed.
+ * Should be used in all places where PIDF loops are needed.</p>
  *
  * @since 0.1.0
  */
@@ -58,10 +58,10 @@ public class PIDConfig {
     }
 
     /**
-     * Constructs a PID configuration with the specified loop gain constants.
-     * Has a default range value of [-1, 1] or full range.<br><br>
+     * <p>Constructs a PID configuration with the specified loop gain constants.
+     * Has a default range value of [-1, 1] or full range.</p>
      *
-     * Wrapper for {@link #PIDConfig(double, double, double, double, double)}.
+     * <p>Overload for {@link #PIDConfig(double, double, double, double, double)}.</p>
      *
      * @see #PIDConfig(double, double, double, double, double)
      * @since 0.1.0
@@ -71,10 +71,10 @@ public class PIDConfig {
     }
 
     /**
-     * Constructs a PID configuration with the specified loop gain constants.
-     * Has a default range value of [-1, 1] or full range and no feed forward.<br><br>
+     * <p>Constructs a PID configuration with the specified loop gain constants.
+     * Has a default range value of [-1, 1] or full range and no feed forward.</p>
      *
-     * Wrapper for {@link #PIDConfig(double, double, double, double, double)}.
+     * <p>Overload for {@link #PIDConfig(double, double, double, double, double)}.</p>
      *
      * @see #PIDConfig(double, double, double, double, double)
      * @since 0.1.0

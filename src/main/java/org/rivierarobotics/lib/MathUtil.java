@@ -33,10 +33,10 @@ public class MathUtil {
     }
 
     /**
-     * Fits value between -1 and 1 but eliminates noise between the deadband.
-     * Uses a system default value for the deadband. <br><br>
+     * <p>Fits value between -1 and 1 but eliminates noise between the deadband.
+     * Uses a system default value for the deadband.</p>
      *
-     * Wrapper for {@link #fitDeadband(double, double)}.
+     * <p>Overload for {@link #fitDeadband(double, double)}.</p>
      *
      * @param val the value to fit inside the deadband.
      * @return the value fitted to the range.
@@ -49,11 +49,11 @@ public class MathUtil {
     }
 
     /**
-     * Fits value between -1 and 1 but eliminates noise between the deadband. <br><br>
+     * <p>Fits value between -1 and 1 but eliminates noise between the deadband.</p>
      *
-     * Generally used for eliminating noise in joystick readings by setting the
+     * <p>Generally used for eliminating noise in joystick readings by setting the
      * output to zero when within a certain deadband amount of zero. Non-joystick
-     * values are also limited between -1 and 1 so as to use in a motor set.
+     * values are also limited between -1 and 1 so as to use in a motor set.</p>
      *
      * @param val the value to fit inside the valid range and outside the deadband.
      * @param deadband the amount of tolerance around zero in which
@@ -82,10 +82,10 @@ public class MathUtil {
     }
 
     /**
-     * Wraps a circular angle value to within one circle. Uses a standard
-     * 360 degrees per circle, angle is passed in degrees.<br><br>
+     * <p>Wraps a circular angle value to within one circle. Uses a standard
+     * 360 degrees per circle, angle is passed in degrees.</p>
      *
-     * Wrapper for {@link #wrapToCircle(double, double)}
+     * <p>Overload for {@link #wrapToCircle(double, double)}.</p>
      *
      * @param angle the number of degrees to wrap.
      * @return the [0, 360] degrees angle after being wrapped.
@@ -94,14 +94,14 @@ public class MathUtil {
      * @since 0.1.0
      */
     public static double wrapToCircle(double angle) {
-        return wrapToCircle(angle, 360); //default 360 degrees/circle
+        return wrapToCircle(angle, 360); // Default 360 degrees per circle
     }
 
     /**
-     * Wraps a circular angle value to within one circle.<br><br>
+     * <p>Wraps a circular angle value to within one circle.</p>
      *
-     * Customizable number of angle units per circle. Angle is
-     * equivalent and wrapped to the positive [0, fullCircle] range.
+     * <p>Customizable number of angle units per circle. Angle is
+     * equivalent and wrapped to the positive [0, fullCircle] range.</p>
      *
      * @param angle the raw angle units to wrap.
      * @param fullCircle the number of angle units to be one circle.
@@ -115,10 +115,10 @@ public class MathUtil {
     }
 
     /**
-     * Fits a value between an upper and lower limit.
-     * Creates the lower limit by negating the passed value.<br><br>
+     * <p>Fits a value between an upper and lower limit.
+     * Creates the lower limit by negating the passed value.</p>
      *
-     * Wrapper for {@link #limit(double, double, double)}.
+     * <p>Overload for {@link #limit(double, double, double)}.</p>
      *
      * @see #limit(double, double, double)
      * @since 0.1.0
@@ -148,10 +148,10 @@ public class MathUtil {
     }
 
     /**
-     * Converts degrees angles to ticks values.
-     * Uses a standard 4096 ticks per circle.<br><br>
+     * <p>Converts degrees angles to ticks values.
+     * Uses a standard 4096 ticks per circle.</p>
      *
-     * Wrapper for {@link #degreesToTicks(double, double)}.
+     * <p>Overload for {@link #degreesToTicks(double, double)}.</p>
      *
      * @see #degreesToTicks(double, double)
      * @since 0.1.0
@@ -175,10 +175,10 @@ public class MathUtil {
     }
 
     /**
-     * Converts ticks values to degrees angles.
-     * Uses a standard 4096 ticks per circle.<br><br>
+     * <p>Converts ticks values to degrees angles.
+     * Uses a standard 4096 ticks per circle.</p>
      *
-     * Wrapper for {@link #ticksToDegrees(double, double)}.
+     * <p>Overload for {@link #ticksToDegrees(double, double)}.</p>
      *
      * @see #ticksToDegrees(double, double)
      * @since 0.1.0
@@ -218,11 +218,11 @@ public class MathUtil {
     }
 
     /**
-     * Calculates the magnitude of a set of doubles.<br><br>
+     * <p>Calculates the magnitude of a set of doubles.</p>
      *
-     * Assumes passed values are vectors and subject
+     * <p>Assumes passed values are vectors and subject
      * to vector operations. For example, three values may
-     * represent the magnitude of a vector in R3.
+     * represent the magnitude of a vector in R3.</p>
      *
      * @param values the doubles to get the magnitude of.
      * @return the combined magnitude of the values.
@@ -238,13 +238,13 @@ public class MathUtil {
     }
 
     /**
-     * Calculates bounded motor outputs for an arcade drive system. <br><br>
+     * <p>Calculates bounded motor outputs for an arcade drive system.</p>
      *
-     * Turns using the x input and fwd/back using the y.
+     * <p>Turns using the x input and fwd/back using the y.
      * Generally used to emulate the feel of driving in an "arcade"
      * instead of standard tank drive (west coast motor configuration).
      * May pass any input, most often used with two joysticks:
-     * left driver Y axis and right driver X axis.
+     * left driver Y axis and right driver X axis.</p>
      *
      * @param x joystick input [-1, 1] used for turning.
      * @param y joystick input [-1, 1] used for forward/backward movement.

@@ -26,7 +26,7 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
  * Manages multiple different PID configurations on a
  * single CTRE motor controller. Does not require
  * manual setpoint and calculation control.
- * Previously <code>MultiPID</code>.
+ * Previously {@code MultiPID}.
  *
  * @see PIDStore
  * @see WPIMultiPID
@@ -36,11 +36,11 @@ public class CTREMultiPID extends PIDStore {
     private final BaseTalon motor;
 
     /**
-     * Constructs a new PID manager with n set PID constant configurations
-     * and a single CTRE motor controller.<br><br>
+     * <p>Constructs a new PID manager with n set PID constant configurations
+     * and a single CTRE motor controller.</p>
      *
-     * Automatically applies the configurations in passed order
-     * and selects the 0-th configuration to be used.
+     * <p>Automatically applies the configurations in passed order
+     * and selects the 0-th configuration to be used.</p>
      *
      * @param motor the CTRE motor controller to manage.
      * @param configs the configurations to set on the controller.
@@ -79,7 +79,7 @@ public class CTREMultiPID extends PIDStore {
      *
      * The slot number is [0, 3] as dictated by the 4 slots per controller.
      * Configurations only need to be applied once, then switched between with
-     * <code>motor.selectProfileSlot(idx, 0)</code>. Note that the 0 represents
+     * {@code motor.selectProfileSlot(idx, 0)}. Note that the 0 represents
      * the primary controller. It is suggested to remain on the primary for quick
      * switching (i.e. position to velocity) and resort to auxiliary if more
      * than four configurations are needed (unlikely) or two controllers need

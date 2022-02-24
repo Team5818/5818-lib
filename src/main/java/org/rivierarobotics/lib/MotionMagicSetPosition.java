@@ -27,19 +27,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
- * Helper command to set a position using a Motion Magic enabled CTRE motor controller.<br><br>
+ * <p>Helper command to set a position using a Motion Magic enabled CTRE motor controller.</p>
  *
- * Takes a subsystem per the WPILib standard <code>CommandBase</code> and
- * moves it (while being a <code>requirement</code>). Positions should be
+ * <p>Takes a subsystem per the WPILib standard {@code CommandBase} and
+ * moves it (while being a {@code requirement}). Positions should be
  * supplied in ticks and timeout in seconds. Set timeout to any negative
  * number to make the command run until it is within tolerance only
  * (i.e. remove the timeout, not suggested). Similarly, setting front
  * and back limits to -1 respectively disable them. This is compatible
  * with {@link MotorUtil#setSoftLimits(double, double, BaseTalon...)}.
- * Behavior on limit overrun is to stop the command.<br><br>
+ * Behavior on limit overrun is to stop the command.</p>
  *
- * It is also suggested that this be a supertype for other wrapper commands.
- * That way subsystems can be injected by Dagger and still work off this.
+ * <p>It is also suggested that this be a supertype for other wrapper commands.
+ * That way subsystems can be injected by Dagger and still work off this.</p>
  *
  * @param <T> the subsystem type; preserves methods for overriding in subclasses.
  *
@@ -56,11 +56,11 @@ public abstract class MotionMagicSetPosition<T extends Subsystem> extends Comman
     protected double startTime;
 
     /**
-     * Constructs the command which goes to a position using Motion Magic.<br><br>
+     * <p>Constructs the command which goes to a position using Motion Magic.</p>
      *
-     * All units should by default be in ticks. However, they may be any unit so long
+     * <p>All units should by default be in ticks. However, they may be any unit so long
      * as all passed values and method overrides use that same unit. This may include
-     * angles (degrees or radians), positions (meters or inches), etc.
+     * angles (degrees or radians), positions (meters or inches), etc.</p>
      *
      * @param subsystem the WPILib registered subsystem contains a CTRE motor configured to use MotionMagic.
      * @param fwdLimit maximum forward position allowed.
@@ -83,10 +83,10 @@ public abstract class MotionMagicSetPosition<T extends Subsystem> extends Comman
     }
 
     /**
-     * Constructs the command which goes to a position using Motion Magic.
-     * Disables forward and backward limits.<br><br>
+     * <p>Constructs the command which goes to a position using Motion Magic.
+     * Disables forward and backward limits.</p>
      *
-     * Wrapper for {@link #MotionMagicSetPosition(Subsystem, double, double, double, double, double)}.
+     * <p>Overload for {@link #MotionMagicSetPosition(Subsystem, double, double, double, double, double)}.</p>
      *
      * @see #MotionMagicSetPosition(Subsystem, double, double, double, double, double)
      * @since 0.1.0
@@ -96,11 +96,11 @@ public abstract class MotionMagicSetPosition<T extends Subsystem> extends Comman
     }
 
     /**
-     * Initializes the command once. Standard WPILib command function override.<br><br>
+     * <p>Initializes the command once. Standard WPILib command function override.</p>
      *
-     * Passes the setpoint to the setpoint consumer on the subsystem.
+     * <p>Passes the setpoint to the setpoint consumer on the subsystem.
      * (i.e. the motor takes the setpoint and starts going).
-     * Timer to timeout starts after setpoint is set.
+     * Timer to timeout starts after setpoint is set.</p>
      *
      * @since 0.1.0
      */

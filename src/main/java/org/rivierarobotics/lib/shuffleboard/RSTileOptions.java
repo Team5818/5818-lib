@@ -24,12 +24,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 
 /**
- * A utility class for storing position and sizing details of
- * <code>RobotShuffleboard</code> tiles, tabs, and tables.<br><br>
+ * <p>A utility class for storing position and sizing details of
+ * {@code RobotShuffleboard} tiles, tabs, and tables.</p>
  *
- * The field {@link RSTileOptions#DEFAULT} is used by default in many
+ * <p>The field {@link RSTileOptions#DEFAULT} is used by default in many
  * wrapper methods to specify that the options should not be applied
- * and the Shuffleboard defaults should be used instead.
+ * and the Shuffleboard defaults should be used instead.</p>
  *
  * @see RSTab
  * @see RSTable
@@ -43,13 +43,13 @@ public class RSTileOptions {
     private final int posY;
 
     /**
-     * Constructs a new utility class and passes through data.<br><br>
+     * <p>Constructs a new utility class and passes through data.</p>
      *
-     * A value of -1 for any parameter indicates that it should not be
+     * <p>A value of -1 for any parameter indicates that it should not be
      * applied to the target and the default should instead persist.
      * Position coordinates are defined in screen-space where the origin
      * is the top-left and both coordinates increase as they approach
-     * the bottom-right of the screen.
+     * the bottom-right of the screen.</p>
      *
      * @param width the width, in tile units, of the item.
      * @param height the height, in tile units, of the item.
@@ -82,7 +82,7 @@ public class RSTileOptions {
     }
 
     /**
-     * Applies the current properties to a <code>SimpleWidget</code> (primitive tile).
+     * Applies the current properties to a {@code SimpleWidget} (primitive tile).
      *
      * @param sWidget the simple widget to set the properties of.
      * @return the configured simple widget.
@@ -95,8 +95,8 @@ public class RSTileOptions {
     }
 
     /**
-     * Applies the current properties to a <code>ComplexWidget</code>
-     * (<code>VideoSource</code> or <code>Sendable</code>, other types)
+     * Applies the current properties to a {@code ComplexWidget}
+     * ({@code VideoSource} or {@code Sendable}, other types)
      *
      * @param cWidget the complex widget to set the properties of.
      * @return the configured complex widget.

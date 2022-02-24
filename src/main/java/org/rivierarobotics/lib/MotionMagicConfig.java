@@ -28,12 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores a configuration of Motion Magic related constants
- * for use in <code>MotorUtil.setupMotionMagic()</code>. <br><br>
+ * <p>Stores a configuration of Motion Magic related constants
+ * for use in {@code MotorUtil.setupMotionMagic()}.</p>
  *
- * Values that are not specified by the constructor will not be
+ * <p>Values that are not specified by the constructor will not be
  * set, with the exception of timeout and period, which are
- * both 10ms by default. This class also is a builder-type.
+ * both 10ms by default.</p>
+ *
+ * <p>Methods are arranged as a builder. Daisy-chaining is encouraged.</p>
  *
  * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)
  * @since 0.3.0
@@ -78,10 +80,10 @@ public class MotionMagicConfig {
     }
 
     /**
-     * Constructs a Motion Magic configuration with the specified constants.
-     * Initializes all values except timeout and period to null/false/empty.<br><br>
+     * <p>Constructs a Motion Magic configuration with the specified constants.
+     * Initializes all values except timeout and period to null/false/empty.</p>
      *
-     * Wrapper for {@link #MotionMagicConfig(List, boolean, Integer, Integer, Integer, Integer, int, int)}.
+     * <p>Overload for {@link #MotionMagicConfig(List, boolean, Integer, Integer, Integer, Integer, int, int)}.</p>
      *
      * @see #MotionMagicConfig(List, boolean, Integer, Integer, Integer, Integer, int, int)
      * @since 0.3.0
@@ -91,10 +93,10 @@ public class MotionMagicConfig {
     }
 
     /**
-     * Constructs a Motion Magic configuration with the specified constants.
-     * Initializes timeout and period to 10ms each.<br><br>
+     * <p>Constructs a Motion Magic configuration with the specified constants.
+     * Initializes timeout and period to 10ms each.</p>
      *
-     * Wrapper for {@link #MotionMagicConfig(int, int)}.
+     * <p>Overload for {@link #MotionMagicConfig(int, int)}.</p>
      *
      * @see #MotionMagicConfig(int, int)
      * @since 0.3.0

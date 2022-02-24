@@ -21,13 +21,13 @@
 package org.rivierarobotics.lib;
 
 /**
- * Base class to manage multiple different PID
- * configurations.<br><br>
+ * <p>Base class to manage multiple different PID
+ * configurations.</p>
  *
- * Most often used for separate position and velocity PID
+ * <p>Most often used for separate position and velocity PID
  * constants though it has the capability to be used for
  * any number of configurations. Uses the {@link PIDConfig}
- * system to store PID modes/constant sets.
+ * system to store PID modes/constant sets.</p>
  *
  * @see PIDConfig
  * @see Mode
@@ -53,9 +53,9 @@ public abstract class PIDStore {
     }
 
     /**
-     * Gets the configuration associated with a physics movement type.<br><br>
+     * <p>Gets the configuration associated with a physics movement type.</p>
      *
-     * Wrapper for {@link #getConfig(int)}.
+     * <p>Overload for {@link #getConfig(int)}.</p>
      *
      * @param mode the type identifier of the configuration to get.
      * @return the stored PID configuration.
@@ -81,9 +81,9 @@ public abstract class PIDStore {
     }
 
     /**
-     * Selects the configuration associated with a physics movement type.<br><br>
+     * <p>Selects the configuration associated with a physics movement type.</p>
      *
-     * Wrapper for {@link #selectConfig(int)}.
+     * <p>Overload for {@link #selectConfig(int)}.</p>
      *
      * @param mode the type identifier of the configuration to get.
      *
@@ -112,7 +112,7 @@ public abstract class PIDStore {
     }
 
     /**
-     * Get the current movement mode/type configuration.<br><br>
+     * Get the current movement mode/type configuration.
      *
      * @return the current mode/type if the current
      *         index is valid, otherwise null.
@@ -135,11 +135,11 @@ public abstract class PIDStore {
     }
 
     /**
-     * Determine if the currently selected index is a valid
-     * index in the configuration array.<br><br>
+     * <p>Determine if the currently selected index is a valid
+     * index in the configuration array.</p>
      *
-     * Invalid indices may occur when disabled <code>-1 less than 0</code>
-     * or if passed to <code>selectConfig(int idx)</code>.
+     * <p>Invalid indices may occur when disabled {@code -1 less than 0}
+     * or if passed to {@code selectConfig(int idx)}.</p>
      *
      * @return if the currently selected index is valid.
      *
@@ -151,7 +151,7 @@ public abstract class PIDStore {
 
     /**
      * Represents physics movement types (position, velocity, and acceleration)
-     * for use in <code>MultiPID</code> managers.
+     * for use in {@code MultiPID} managers.
      *
      * @since 0.2.0
      */

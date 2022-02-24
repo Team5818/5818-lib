@@ -37,11 +37,11 @@ public class MotorUtil {
     }
 
     /**
-     * Configures Motion Magic motion profiling on given CTRE
+     * <p>Configures Motion Magic motion profiling on given CTRE
      * Talon, Victor, or Falcon controlled motors.
-     * Has a default PID slot index of 0 (primary).<br><br>
+     * Has a default PID slot index of 0 (primary).</p>
      *
-     * Wrapper for {@link #setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)}.
+     * <p>Overload for {@link #setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)}.</p>
      *
      * @see #setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)
      * @since 0.3.0
@@ -52,17 +52,15 @@ public class MotorUtil {
     }
 
     /**
-     * Configures Motion Magic motion profiling on given CTRE
-     * Talon, Victor, or Falcon controlled motors.<br><br>
+     * <p>Configures Motion Magic motion profiling on given CTRE
+     * Talon, Victor, or Falcon controlled motors.</p>
      *
-     * Uses the internal 1 kHz clock of the controller instead of the 20 ms
+     * <p>Uses the internal 1 kHz clock of the controller instead of the 20 ms
      * RoboRio clock. This is recommended as it removes the need to make
      * custom motion profiles, leading to faster turnaround times on subsystems.
-     * As a warning, this first resets all motor settings to factory default
-     * and then configures the feedback sensor based on the passed value.
-     * As such is is recommended that this be the first motor configuration call
-     * in any subsystem. Note that maximum velocity and acceleration will
-     * not be set if <code>maxVel == 0</code>.
+     * It is recommended that this be the first motor configuration call
+     * in any subsystem due to the ability for this to reset the controller
+     * before making changes. This can be changed with {@code MotionMagicConfig}.</p>
      *
      * @param sensor the sensor attached to the controller used for loop feedback.
      * @param pidConfig the PIDF and range values to use on the controller.
@@ -122,12 +120,12 @@ public class MotorUtil {
     }
 
     /**
-     * Places limits on the range of CTRE Talon, Victor, or Falcon controlled motors.<br><br>
+     * <p>Places limits on the range of CTRE Talon, Victor, or Falcon controlled motors.</p>
      *
-     * Limits are defined in ticks and apply to both power and positional control sets.
+     * <p>Limits are defined in ticks and apply to both power and positional control sets.
      * It is still recommended that both are limited manually if possible. Note that
      * this is a hard stop (despite being a soft limit) and does not account for velocity
-     * accumulated while moving. This value does not persist after power-off.
+     * accumulated while moving. This value does not persist after power-off.</p>
      *
      * @param forward the maximum ticks in the forward/positive direction.
      * @param reverse the minimum ticks in the reverse/backward/negative direction.

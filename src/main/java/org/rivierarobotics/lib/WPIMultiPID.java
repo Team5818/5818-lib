@@ -26,13 +26,13 @@ import java.util.LinkedHashMap;
 import java.util.function.Supplier;
 
 /**
- * Manages multiple different PID configurations on
+ * <p>Manages multiple different PID configurations on
  * synchronous WPILib PID controllers. Requires that setpoints
- * be passed and calculations occur within this object.<br><br>
+ * be passed and calculations occur within this object.</p>
  *
- * Intended to be used for non-CTRE motor controllers
+ * <p>Intended to be used for non-CTRE motor controllers
  * (e.g. SparkMAX) that do not support on-controller
- * motion profiling (e.g. MotionMagic).
+ * motion profiling (e.g. MotionMagic).</p>
  *
  * @see PIDStore
  * @see CTREMultiPID
@@ -43,11 +43,11 @@ public class WPIMultiPID extends PIDStore {
     private final LinkedHashMap<Integer, Supplier<Double>> feedbackSuppliers;
 
     /**
-     * Constructs a new PID manager with n set PID constant configurations
-     * and creates WPILib <code>PIDController</code> objects for each one.<br><br>
+     * <p>Constructs a new PID manager with n set PID constant configurations
+     * and creates WPILib {@code PIDController} objects for each one.</p>
      *
-     * Does not use controllers unless called by <code>calculate()</code>.
-     * Disabled by default, will only calculate with active controller.
+     * <p>Does not use controllers unless called by {@code calculate()}.
+     * Disabled by default, will only calculate with active controller.</p>
      *
      * @param configs the configurations to create controllers for.
      *
@@ -66,7 +66,7 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Disable the <code>MultiPID</code> instance. Prevents
+     * Disable the {@code MultiPID} instance. Prevents
      * calculations from running by selecting an invalid index.
      *
      * @since 0.2.0
@@ -76,11 +76,11 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Set the setpoint of the currently selected controller.<br><br>
+     * <p>Set the setpoint of the currently selected controller.</p>
      *
-     * This must be set before calling calculate, otherwise
+     * <p>This must be set before calling calculate, otherwise
      * no movement will occur. Ensure that the correct index is
-     * selected before calling this method.
+     * selected before calling this method.</p>
      *
      * @param setpoint the new setpoint in units that are
      *                 the same as the indended feedback units.
@@ -97,9 +97,9 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Provides a feedback supplier to the PID controller. <br><br>
+     * <p>Provides a feedback supplier to the PID controller.</p>
      *
-     * Wrapper for {@link #supplyFeedback(int, Supplier)}.
+     * <p>Overload for {@link #supplyFeedback(int, Supplier)}.</p>
      *
      * @param mode the type identifier of the configuration to supply.
      * @param feedback the supplier to provide feedback
@@ -113,8 +113,8 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Provides a feedback supplier to the PID controller.
-     * Will automatically switch between suppliers when modes are changed.<br><br>
+     * <p>Provides a feedback supplier to the PID controller.
+     * Will automatically switch between suppliers when modes are changed.</p>
      *
      * @param idx the index to supply to.
      * @param feedback the supplier to provide feedback
