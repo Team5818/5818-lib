@@ -43,8 +43,8 @@ import java.util.List;
 public class MotionMagicConfig {
     private final List<Integer> statusFrames;
     private boolean reset;
-    private Integer maxVel;
-    private Integer maxAccel;
+    private Double maxVel;
+    private Double maxAccel;
     private Integer integralZone;
     private Integer sCurveStrength;
     private int timeoutMs;
@@ -66,7 +66,7 @@ public class MotionMagicConfig {
      * @since 0.3.0
      */
     public MotionMagicConfig(List<Integer> statusFrames, boolean reset,
-                             Integer maxVel, Integer maxAccel,
+                             Double maxVel, Double maxAccel,
                              Integer integralZone, Integer sCurveStrength,
                              int timeoutMs, int periodMs) {
         this.statusFrames = statusFrames;
@@ -83,9 +83,9 @@ public class MotionMagicConfig {
      * <p>Constructs a Motion Magic configuration with the specified constants.
      * Initializes all values except timeout and period to null/false/empty.</p>
      *
-     * <p>Overload for {@link #MotionMagicConfig(List, boolean, Integer, Integer, Integer, Integer, int, int)}.</p>
+     * <p>Overload for {@link #MotionMagicConfig(List, boolean, Double, Double, Integer, Integer, int, int)}.</p>
      *
-     * @see #MotionMagicConfig(List, boolean, Integer, Integer, Integer, Integer, int, int)
+     * @see #MotionMagicConfig(List, boolean, Double, Double, Integer, Integer, int, int)
      * @since 0.3.0
      */
     public MotionMagicConfig(int timeoutMs, int periodMs) {
@@ -119,12 +119,12 @@ public class MotionMagicConfig {
         return this;
     }
 
-    public MotionMagicConfig setMaxVel(Integer maxVel) {
+    public MotionMagicConfig setMaxVel(Double maxVel) {
         this.maxVel = maxVel;
         return this;
     }
 
-    public MotionMagicConfig setMaxAccel(Integer maxAccel) {
+    public MotionMagicConfig setMaxAccel(Double maxAccel) {
         this.maxAccel = maxAccel;
         return this;
     }
@@ -157,11 +157,11 @@ public class MotionMagicConfig {
         return reset;
     }
 
-    public Integer getMaxVel() {
+    public Double getMaxVel() {
         return maxVel;
     }
 
-    public Integer getMaxAccel() {
+    public Double getMaxAccel() {
         return maxAccel;
     }
 
