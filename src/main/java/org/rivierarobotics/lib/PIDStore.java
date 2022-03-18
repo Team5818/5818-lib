@@ -120,7 +120,7 @@ public abstract class PIDStore {
      * @since 0.2.1
      */
     public Mode getCurrentMode() {
-        return isIdxValid() ? Mode.values()[currentIdx] : null;
+        return isIndexValid() ? Mode.values()[currentIdx] : null;
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class PIDStore {
      *
      * @since 0.2.1
      */
-    public boolean isIdxValid() {
+    public boolean isIndexValid() {
         return currentIdx > 0 && currentIdx < configs.length;
     }
 

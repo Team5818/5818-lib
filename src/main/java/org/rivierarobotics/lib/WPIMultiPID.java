@@ -41,6 +41,7 @@ import java.util.function.Supplier;
 public class WPIMultiPID extends PIDStore {
     private final PIDController[] controllers;
     private final LinkedHashMap<Integer, Supplier<Double>> feedbackSuppliers;
+    private boolean enabled;
 
     /**
      * <p>Constructs a new PID manager with n set PID constant configurations
@@ -66,13 +67,38 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Disable the {@code MultiPID} instance. Prevents
-     * calculations from running by selecting an invalid index.
+     * Enable the {@code MultiPID} instance.
      *
+     * @see #isEnabled()
+     * @since 0.3.2
+     */
+    public void enable() {
+        enabled = true;
+    }
+
+    /**
+     * Disable the {@code MultiPID} instance. Prevents
+     * calculations from running by toggling a flag.
+     *
+     * @see #isEnabled()
      * @since 0.2.0
      */
     public void disable() {
-        currentIdx = -1;
+        enabled = false;
+    }
+
+    /**
+     * <p>Determine if the {@code MultiPID} instance is enabled.</p>
+     *
+     * <p>The multicontroller can perform any action except calculate
+     * a PID result while disabled.</p>
+     *
+     * @return if this multicontroller is enabled.
+     *
+     * @since 0.3.2
+     */
+    public boolean isEnabled() {
+        return enabled;
     }
 
     /**
@@ -89,7 +115,7 @@ public class WPIMultiPID extends PIDStore {
      * @since 0.2.0
      */
     public boolean setSetpoint(double setpoint) {
-        boolean idxValid = super.isIdxValid();
+        boolean idxValid = super.isIndexValid();
         if (idxValid) {
             controllers[currentIdx].setSetpoint(setpoint);
         }
@@ -127,15 +153,20 @@ public class WPIMultiPID extends PIDStore {
     }
 
     /**
-     * Calculate the [-1, 1] motor power as given by the
+     * <p>Calculate the [-1, 1] motor power as given by the
      * currently selected PID controller. Automatically applies
-     * feedback using provided suppliers.
+     * feedback using provided suppliers.</p>
+     *
+     * <p>Will return a value of 0.0 if disabled.</p>
      *
      * @return the [-1, 1] power to set to the motor.
      *
      * @since 0.2.1
      */
     public double calculate() {
+        if (!enabled) {
+            return 0.0;
+        }
         Supplier<Double> feedback = feedbackSuppliers.get(currentIdx);
         return feedback != null ? calculate(feedback.get()) : 0;
     }
@@ -153,7 +184,7 @@ public class WPIMultiPID extends PIDStore {
      * @since 0.2.0
      */
     public double calculate(double feedback) {
-        return !super.isIdxValid() ? 0 : MathUtil.limit(
+        return !super.isIndexValid() ? 0 : MathUtil.limit(
                 controllers[currentIdx].calculate(feedback),
                 configs[currentIdx].getRange()
         );
