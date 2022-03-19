@@ -20,6 +20,7 @@
 
 package org.rivierarobotics.lib;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -117,6 +118,88 @@ public class MotorUtil {
                 motor.configMotionAcceleration(mmConfig.getMaxAccel());
             }
         }
+    }
+
+    /**
+     * <p>Selects a sensor to use with a given CTRE motor controller.</p>
+     *
+     * <p>Overload for {@link #setupSelectedSensor(FeedbackDevice, int, boolean, BaseTalon...)}.</p>
+     *
+     * @see #setupSelectedSensor(FeedbackDevice, int, boolean, BaseTalon...)
+     * @since 0.3.2
+     */
+    public static void setupSelectedSensor(FeedbackDevice sensor, BaseTalon... motors) {
+        setupSelectedSensor(sensor, 20, true, motors);
+    }
+
+    /**
+     * <p>Selects a sensor to use with a given CTRE motor controller.</p>
+     *
+     * <p>This approach allows the end user to use {@code motor.getSelectedSensorPosition()}
+     * directly from the motor, which is faster than using the normal (for TalonSRX)
+     * {@code motor.getSensorCollection().getPulseWidthPosition()}. This setup
+     * only has to be performed once, then will allow repeated position get requests.</p>
+     *
+     * @param sensor the sensor device/type to use as feedback for this motor controller.
+     * @param periodMs the period of the receipt status frame (typically 10-20ms).
+     * @param motors all the motors to which this configuration will be applied.
+     *
+     * @since 0.3.2
+     */
+    public static void setupSelectedSensor(FeedbackDevice sensor, int periodMs,
+                                           boolean setStatusFrame, BaseTalon... motors) {
+        int statusFrame = 0;
+        if (setStatusFrame) {
+            switch (sensor) {
+                case PulseWidthEncodedPosition:
+                case CTRE_MagEncoder_Absolute:
+                    statusFrame = StatusFrameEnhanced.Status_8_PulseWidth.value;
+                    break;
+                case IntegratedSensor:
+                    // Status group ID for Talon FX integrated sensor
+                    // https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html#motor-controllers
+                    statusFrame = 21;
+                    break;
+                case QuadEncoder:
+                case CTRE_MagEncoder_Relative:
+                    statusFrame = StatusFrameEnhanced.Status_3_Quadrature.value;
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported feedback sensor");
+            }
+        }
+        ErrorCode err;
+        for (BaseTalon motor : motors) {
+            if (setStatusFrame) {
+                err = motor.setStatusFramePeriod(statusFrame, periodMs);
+                checkError(err, false);
+            }
+            err = motor.configSelectedFeedbackSensor(sensor);
+            checkError(err, false);
+        }
+    }
+
+    /**
+     * <p>Check an {@code ErrorCode} to see if it represents an error,
+     * then trigger an {@code Error} if not running in silent mode.</p>
+     *
+     * <p>Will only return a value in the case of an error if the
+     * silent mode boolean is set to true.</p>
+     *
+     * @param err the {@code ErrorCode} to check.
+     * @param silent true if the {@code ErrorCode} should throw an {@code Error},
+     *               (and run silently), else false.
+     * @return true if the {@code ErrorCode} represents an error.
+     *
+     * @see #setupSelectedSensor(FeedbackDevice, int, boolean, BaseTalon...)
+     * @since 0.3.2
+     */
+    private static boolean checkError(ErrorCode err, boolean silent) {
+        boolean isError = err != ErrorCode.OK;
+        if (isError && !silent) {
+            throw new Error(err.name());
+        }
+        return isError;
     }
 
     /**
