@@ -20,16 +20,16 @@
 
 package org.rivierarobotics.lib.shuffleboard;
 
-import edu.wpi.cscore.VideoException;
-import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.VideoException;
+import edu.wpi.first.cscore.VideoSource;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -106,7 +106,7 @@ public class RSTab {
      * @since 0.1.0
      */
     public RSTab setCamera(String name, RSTileOptions options) throws VideoException {
-        return setVideoSource(CameraServer.getInstance().getVideo(name).getSource(), options);
+        return setVideoSource(CameraServer.getVideo(name).getSource(), options);
     }
 
     /**

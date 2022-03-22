@@ -24,19 +24,27 @@ repositories {
         name = "CTRE Maven"
         url = uri("https://devsite.ctr-electronics.com/maven/release/")
     }
+    maven {
+        name = "Rev Maven"
+        url = uri("https://maven.revrobotics.com/");
+    }
 }
 
 dependencies {
-    val wpiVersion = "2020.3.2"
+    val wpiVersion = "2022.4.1"
     api("edu.wpi.first.wpilibj:wpilibj-java:$wpiVersion")
+    api("edu.wpi.first.wpiutil:wpiutil-java:$wpiVersion")
     api("edu.wpi.first.ntcore:ntcore-java:$wpiVersion")
     api("edu.wpi.first.cscore:cscore-java:$wpiVersion")
     api("edu.wpi.first.cameraserver:cameraserver-java:$wpiVersion")
     api("edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:$wpiVersion")
 
-    val ctreVersion = "5.19.4"
+    val ctreVersion = "5.20.2"
     api("com.ctre.phoenix:wpiapi-java:$ctreVersion")
     api("com.ctre.phoenix:api-java:$ctreVersion")
+
+    val revVersion = "2022.1.1"
+    api("com.revrobotics.frc:REVLib-java:$revVersion")
 }
 
 configure<LicenseExtension> {

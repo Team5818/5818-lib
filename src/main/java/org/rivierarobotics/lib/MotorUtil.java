@@ -27,6 +27,9 @@ import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxPIDController;
 
 /**
  * Utility methods relating to robot motor movement.
@@ -117,6 +120,44 @@ public class MotorUtil {
             if (mmConfig.getMaxAccel() != null) {
                 motor.configMotionAcceleration(mmConfig.getMaxAccel());
             }
+        }
+    }
+
+    public static void setupSmartMotion(PIDConfig pidConfig, int slotIdx,
+                                        SmartMotionConfig smConfig, CANSparkMax... motors) {
+        for (CANSparkMax motor : motors) {
+            if (smConfig.doReset()) {
+                motor.restoreFactoryDefaults();
+            }
+            for (int statusFrame : smConfig.getStatusFrames()) {
+                CANSparkMaxLowLevel.PeriodicFrame pFrame = CANSparkMaxLowLevel.PeriodicFrame.fromId(statusFrame);
+                motor.setPeriodicFramePeriod(pFrame, smConfig.getPeriod());
+            }
+
+            SparkMaxPIDController mPidController = motor.getPIDController();
+
+            mPidController.setP(pidConfig.getP());
+            mPidController.setI(pidConfig.getI());
+            mPidController.setD(pidConfig.getD());
+            mPidController.setFF(pidConfig.getF());
+
+            if (smConfig.getIntegralZone() != null) {
+                mPidController.setIZone(smConfig.getIntegralZone());
+            }
+            mPidController.setOutputRange(-pidConfig.getRange(), pidConfig.getRange());
+
+            if (smConfig.getMaxVel() != null) {
+                mPidController.setSmartMotionMaxVelocity(smConfig.getMaxVel(), slotIdx);
+            }
+            if (smConfig.getMinVel() != null) {
+                mPidController.setSmartMotionMinOutputVelocity(smConfig.getMinVel(), slotIdx);
+            }
+            if (smConfig.getMaxAccel() != null) {
+                mPidController.setSmartMotionMaxAccel(smConfig.getMaxAccel(), slotIdx);
+            }
+            mPidController.setSmartMotionAllowedClosedLoopError(pidConfig.getTolerance(), slotIdx);
+
+            motor.burnFlash();
         }
     }
 
