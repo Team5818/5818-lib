@@ -20,7 +20,7 @@
 
 package org.rivierarobotics.lib;
 
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.math.controller.PIDController;
 
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;

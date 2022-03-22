@@ -34,6 +34,7 @@ dependencies {
     val wpiVersion = "2022.4.1"
     api("edu.wpi.first.wpilibj:wpilibj-java:$wpiVersion")
     api("edu.wpi.first.wpiutil:wpiutil-java:$wpiVersion")
+    api("edu.wpi.first.wpimath:wpimath-java:$wpiVersion")
     api("edu.wpi.first.ntcore:ntcore-java:$wpiVersion")
     api("edu.wpi.first.cscore:cscore-java:$wpiVersion")
     api("edu.wpi.first.cameraserver:cameraserver-java:$wpiVersion")
