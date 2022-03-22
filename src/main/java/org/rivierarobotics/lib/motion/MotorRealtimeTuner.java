@@ -18,29 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.motion;
 
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.networktables.EntryNotification;
+import org.rivierarobotics.lib.BaseRealtimeTuner;
+import org.rivierarobotics.lib.pid.PIDConfig;
 import org.rivierarobotics.lib.shuffleboard.RSTab;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-public class RealtimeTuner {
-    private final RSTab tab;
-    private final ControlModeConfig ctrlConfig;
+public class MotorRealtimeTuner extends BaseRealtimeTuner {
+    private final MotionProfile ctrlConfig;
     private final PIDConfig pidConfig;
-    private final Map<String, Integer> allListeners;
 
-    public RealtimeTuner(RSTab tab, ControlModeConfig ctrlConfig, PIDConfig pidConfig) {
-        this.tab = tab;
+    public MotorRealtimeTuner(RSTab tab, MotionProfile ctrlConfig, PIDConfig pidConfig) {
+        super(tab);
         this.ctrlConfig = ctrlConfig;
         this.pidConfig = pidConfig;
-        this.allListeners = new HashMap<>();
     }
 
     public void initBaseController(ValueUpdater... updaters) {
@@ -54,12 +48,12 @@ public class RealtimeTuner {
         initEntry("Max Velocity", ctrlConfig.getMaxVel(), ctrlConfig::setMaxVel, updaters[7]);
         initEntry("Max Acceleration", ctrlConfig.getMaxAccel(), ctrlConfig::setMaxAccel, updaters[8]);
     }
-    
-    public void initCTRE(BaseTalon motor) {
-        initCTRE(motor, 0);
+
+    public boolean initCTRE(BaseTalon motor) {
+        return initCTRE(motor, 0);
     }
 
-    public void initCTRE(BaseTalon motor, int slotIdx) {
+    public boolean initCTRE(BaseTalon motor, int slotIdx) {
         initBaseController(
                 kP -> motor.config_kP(slotIdx, kP),
                 kI -> motor.config_kI(slotIdx, kI),
@@ -71,19 +65,21 @@ public class RealtimeTuner {
                 maxVel -> motor.configMotionCruiseVelocity(maxVel, ctrlConfig.getTimeout()),
                 maxAccel -> motor.configMotionAcceleration(maxAccel, ctrlConfig.getTimeout())
         );
-        if (ctrlConfig instanceof MotionMagicConfig) {
+        boolean configValidType = ctrlConfig instanceof MotionMagicConfig;
+        if (configValidType) {
             MotionMagicConfig mmConfig = (MotionMagicConfig) ctrlConfig;
             initEntry("S Curve Strength", mmConfig.getSCurveStrength(),
                     str -> mmConfig.setSCurveStrength(str.intValue()),
                     str -> motor.configMotionSCurveStrength(str.intValue(), mmConfig.getTimeout()));
         }
+        return configValidType;
     }
-    
-    public void initSpark(CANSparkMax motor) {
-        initSpark(motor, 0);
+
+    public boolean initSpark(CANSparkMax motor) {
+        return initSpark(motor, 0);
     }
-    
-    public void initSpark(CANSparkMax motor, int slotIdx) {
+
+    public boolean initSpark(CANSparkMax motor, int slotIdx) {
         SparkMaxPIDController pid = motor.getPIDController();
         initBaseController(
                 kP -> pid.setP(kP, slotIdx),
@@ -96,39 +92,12 @@ public class RealtimeTuner {
                 maxVel -> pid.setSmartMotionMaxVelocity(maxVel, slotIdx),
                 maxAccel -> pid.setSmartMotionMaxAccel(maxAccel, slotIdx)
         );
-        if (ctrlConfig instanceof SmartMotionConfig) {
+        boolean configValidType = ctrlConfig instanceof SmartMotionConfig;
+        if (configValidType) {
             SmartMotionConfig smConfig = (SmartMotionConfig) ctrlConfig;
             initEntry("Min Vel", smConfig.getMinVel(), smConfig::setMinVel,
                     minVel -> pid.setSmartMotionMinOutputVelocity(minVel.intValue(), slotIdx));
         }
-    }
-
-
-    public RealtimeTuner initEntry(String title, double initValue,
-                                   Consumer<Double> storageUpdater,
-                                   Consumer<Double> actuatorUpdater) {
-        tab.setEntry(title, initValue);
-        Consumer<EntryNotification> func = callback -> {
-            double value = callback.value.getDouble();
-            storageUpdater.accept(value);
-            actuatorUpdater.accept(value);
-
-        };
-        allListeners.put(title, tab.getEntry(title).addListener(func, 0));
-        return this;
-    }
-
-    public boolean hasInitialized() {
-        return allListeners.size() != 0;
-    }
-
-    public void destroy() {
-        for (Map.Entry<String, Integer> listener : allListeners.entrySet()) {
-            tab.getEntry(listener.getKey()).removeListener(listener.getValue());
-        }
-        allListeners.clear();
-    }
-
-    public interface ValueUpdater extends Consumer<Double> {
+        return configValidType;
     }
 }

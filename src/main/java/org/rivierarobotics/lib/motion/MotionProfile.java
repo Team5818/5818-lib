@@ -18,13 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.motion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Stores a configuration of Motion Magic related constants
+ * <p>Stores a configuration of motion profiling related constants
  * for use in {@code MotorUtil.setup[...]()}.</p>
  *
  * <p>Values that are not specified by the constructor will not be
@@ -37,7 +37,7 @@ import java.util.List;
  * @see SmartMotionConfig
  * @since 0.3.0
  */
-public class ControlModeConfig {
+public class MotionProfile {
     private final List<Integer> statusFrames;
     private boolean reset;
     private Double maxVel;
@@ -47,12 +47,12 @@ public class ControlModeConfig {
     private int periodMs;
 
     /**
-     * Constructs a Motion Magic configuration with the specified constants.
+     * Constructs a motion profiling configuration with the specified constants.
      *
      * @param statusFrames a list of integer status frames to set.
      * @param reset reset the controller to factory default if true.
-     * @param maxVel maximum velocity of Motion Magic controller in ticks per 100ms.
-     * @param maxAccel maximum acceleration of Motion Magic controller in ticks per 100ms.
+     * @param maxVel maximum velocity of motion profile in ticks per 100ms.
+     * @param maxAccel maximum acceleration of motion profile in ticks per 100ms.
      * @param integralZone constant for zone/range of integral term
      *                     in closed-loop error calculation.
      * @param timeoutMs timeout of all controller calls in milliseconds.
@@ -60,10 +60,10 @@ public class ControlModeConfig {
      *
      * @since 0.3.0
      */
-    public ControlModeConfig(List<Integer> statusFrames, boolean reset,
-                             Double maxVel, Double maxAccel,
-                             Integer integralZone,
-                             int timeoutMs, int periodMs) {
+    public MotionProfile(List<Integer> statusFrames, boolean reset,
+                         Double maxVel, Double maxAccel,
+                         Integer integralZone,
+                         int timeoutMs, int periodMs) {
         this.statusFrames = statusFrames;
         this.reset = reset;
         this.maxVel = maxVel;
@@ -74,62 +74,69 @@ public class ControlModeConfig {
     }
 
     /**
-     * <p>Constructs a Motion Magic configuration with the specified constants.
+     * <p>Constructs a motion profiling configuration with the specified constants.
      * Initializes all values except timeout and period to null/false/empty.</p>
      *
-     * <p>Overload for {@link #ControlModeConfig(List, boolean, Double, Double, Integer, int, int)}.</p>
+     * <p>Overload for {@link #MotionProfile(List, boolean, Double, Double, Integer, int, int)}.</p>
      *
-     * @see #ControlModeConfig(List, boolean, Double, Double, Integer, int, int)
+     * @see #MotionProfile(List, boolean, Double, Double, Integer, int, int)
      * @since 0.3.0
      */
-    public ControlModeConfig(int timeoutMs, int periodMs) {
+    public MotionProfile(int timeoutMs, int periodMs) {
         this(new ArrayList<>(), false, null, null, null, timeoutMs, periodMs);
     }
 
     /**
-     * <p>Constructs a Motion Magic configuration with the specified constants.
+     * <p>Constructs a motion profiling configuration with the specified constants.
      * Initializes timeout and period to 10ms each.</p>
      *
-     * <p>Overload for {@link #ControlModeConfig(int, int)}.</p>
+     * <p>Overload for {@link #MotionProfile(int, int)}.</p>
      *
-     * @see #ControlModeConfig(int, int)
+     * @see #MotionProfile(int, int)
      * @since 0.3.0
      */
-    public ControlModeConfig() {
+    public MotionProfile() {
         this(10, 10);
     }
 
-    public ControlModeConfig addStatusFrame(int statusFrame) {
+    public MotionProfile addStatusFrame(int statusFrame) {
         statusFrames.add(statusFrame);
         return this;
     }
 
-    public ControlModeConfig setReset(boolean reset) {
+    public MotionProfile addStatusFrames(int... frames) {
+        for (int frame : frames) {
+            statusFrames.add(frame);
+        }
+        return this;
+    }
+
+    public MotionProfile setReset(boolean reset) {
         this.reset = reset;
         return this;
     }
 
-    public ControlModeConfig setMaxVel(Double maxVel) {
+    public MotionProfile setMaxVel(Double maxVel) {
         this.maxVel = maxVel;
         return this;
     }
 
-    public ControlModeConfig setMaxAccel(Double maxAccel) {
+    public MotionProfile setMaxAccel(Double maxAccel) {
         this.maxAccel = maxAccel;
         return this;
     }
 
-    public ControlModeConfig setIntegralZone(Integer integralZone) {
+    public MotionProfile setIntegralZone(Integer integralZone) {
         this.integralZone = integralZone;
         return this;
     }
 
-    public ControlModeConfig setTimeout(int timeoutMs) {
+    public MotionProfile setTimeout(int timeoutMs) {
         this.timeoutMs = timeoutMs;
         return this;
     }
 
-    public ControlModeConfig setPeriod(int periodMs) {
+    public MotionProfile setPeriod(int periodMs) {
         this.periodMs = periodMs;
         return this;
     }

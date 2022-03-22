@@ -18,20 +18,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.motion;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+import org.rivierarobotics.lib.MotorUtil;
+import org.rivierarobotics.lib.pid.PIDConfig;
 
 /**
+ * <p>Stores a configuration of Motion Magic related constants
+ * for use in {@code MotorUtil.setupMotionMagic(...)}.</p>
+ *
+ * <p>Includes the additional {@code sCurveStrength} field
+ * on top of the base {@code MotionProfile} fields. This
+ * represents the strength of the velocity smoothing
+ * applied to the motion profile. Also has a method
+ * for adding status frames using CTRE-specific
+ * {@code StatusFrameEnhanced} enum objects.</p>
+ *
+ * @see MotionProfile
  * @see MotorUtil#setupMotionMagic(FeedbackDevice, PIDConfig, int, MotionMagicConfig, BaseTalon...)
- * @since 0.3.3
+ * @since 0.4.0
  */
-public class MotionMagicConfig extends ControlModeConfig {
+public class MotionMagicConfig extends MotionProfile {
     private Integer sCurveStrength = null;
 
-    public ControlModeConfig setSCurveStrength(Integer sCurveStrength) {
+    public MotionProfile setSCurveStrength(Integer sCurveStrength) {
         this.sCurveStrength = sCurveStrength;
         return this;
     }
@@ -40,7 +53,7 @@ public class MotionMagicConfig extends ControlModeConfig {
         return sCurveStrength;
     }
 
-    public ControlModeConfig addStatusFrame(StatusFrameEnhanced statusFrame) {
+    public MotionProfile addStatusFrame(StatusFrameEnhanced statusFrame) {
         return addStatusFrame(statusFrame.value);
     }
 }

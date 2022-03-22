@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.pid;
 
 /**
  * <p>Stores a PIDF configuration through loop gain constants.</p>

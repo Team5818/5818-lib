@@ -30,6 +30,9 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
+import org.rivierarobotics.lib.motion.MotionMagicConfig;
+import org.rivierarobotics.lib.motion.SmartMotionConfig;
+import org.rivierarobotics.lib.pid.PIDConfig;
 
 /**
  * Utility methods relating to robot motor movement.
@@ -123,6 +126,41 @@ public class MotorUtil {
         }
     }
 
+    /**
+     * <p>Configures Smart Motion motion profiling on given
+     * Rev Robotics Spark MAX motor controllers.
+     * Has a default PID slot index of 0 (primary).</p>
+     *
+     * <p>Overload for {@link #setupSmartMotion(PIDConfig, int, SmartMotionConfig, CANSparkMax...)}.</p>
+     *
+     * @see #setupSmartMotion(PIDConfig, int, SmartMotionConfig, CANSparkMax...)
+     * @since 0.4.0
+     */
+    public static void setupSmartMotion(PIDConfig pidConfig, SmartMotionConfig smConfig, CANSparkMax... motors) {
+        setupSmartMotion(pidConfig, 0, smConfig, motors);
+    }
+
+    /**
+     * <p>Configures Smart Motion motion profiling on given
+     * Rev Robotics Spark MAX motor controllers.</p>
+     *
+     * <p>Uses the faster internal clock of the controller to
+     * compute a motion profile instead of the RoboRio.
+     * This is recommended as it removes the need to make
+     * custom motion profiles, leading to faster turnaround times on subsystems.
+     * It is recommended that this be the first motor configuration call
+     * in any subsystem due to the ability for this to reset the controller
+     * before making changes. This can be changed with {@code MotionMagicConfig}.</p>
+     *
+     * @param pidConfig the PIDF and range values to use on the controller.
+     * @param slotIdx the PID profile slot this configuration applies to.
+     * @param smConfig the specific non-PID configuration options for this controller.
+     * @param motors the motors for which Smart Motion is enabled on.
+     *
+     * @see PIDConfig
+     * @see SmartMotionConfig
+     * @since 0.4.0
+     */
     public static void setupSmartMotion(PIDConfig pidConfig, int slotIdx,
                                         SmartMotionConfig smConfig, CANSparkMax... motors) {
         for (CANSparkMax motor : motors) {

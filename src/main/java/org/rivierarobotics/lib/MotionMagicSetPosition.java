@@ -25,6 +25,8 @@ import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.rivierarobotics.lib.motion.MotionMagicConfig;
+import org.rivierarobotics.lib.pid.PIDConfig;
 
 /**
  * <p>Helper command to set a position using a Motion Magic enabled CTRE motor controller.</p>

@@ -18,9 +18,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.pid;
 
 import edu.wpi.first.math.controller.PIDController;
+import org.rivierarobotics.lib.MathUtil;
 
 import java.util.LinkedHashMap;
 import java.util.function.Supplier;

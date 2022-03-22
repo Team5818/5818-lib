@@ -18,17 +18,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.rivierarobotics.lib;
+package org.rivierarobotics.lib.motion;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import org.rivierarobotics.lib.MotorUtil;
+import org.rivierarobotics.lib.pid.PIDConfig;
 
 /**
+ * <p>Stores a configuration of Smart Motion related constants
+ * for use in {@code MotorUtil.setupSmartMotion(...)}.</p>
  *
+ * <p>Includes the additional {@code minVel} field on top
+ * of the base {@code MotionProfile} fields. This represents
+ * the minimum smart motion velocity in ticks per 100 milliseconds.
+ * Also has a method for adding status frames using Rev-specific
+ * {@code CANSparkMaxLowLevel.PeriodicFrame} enum objects.</p>
+ *
+ * @see MotionProfile
  * @see MotorUtil#setupSmartMotion(PIDConfig, int, SmartMotionConfig, CANSparkMax...)
- * @since 0.3.3
+ * @since 0.4.0
  */
-public class SmartMotionConfig extends ControlModeConfig {
+public class SmartMotionConfig extends MotionProfile {
     private Double minVel = null;
 
     public SmartMotionConfig setMinVel(Double minVel) {
@@ -40,7 +51,7 @@ public class SmartMotionConfig extends ControlModeConfig {
         return minVel;
     }
 
-    public ControlModeConfig addStatusFrame(CANSparkMaxLowLevel.PeriodicFrame statusFrame) {
+    public MotionProfile addStatusFrame(CANSparkMaxLowLevel.PeriodicFrame statusFrame) {
         return addStatusFrame(statusFrame.value);
     }
 }
