@@ -27,16 +27,66 @@ import org.rivierarobotics.lib.BaseRealtimeTuner;
 import org.rivierarobotics.lib.pid.PIDConfig;
 import org.rivierarobotics.lib.shuffleboard.RSTab;
 
+import java.util.function.Consumer;
+
+/**
+ * <p>Realtime tuner for a motor (PID and Motion Profile).
+ * Supports CTRE (Talon, Victor, Falcon) controllers
+ * and Rev Robotics Spark MAX controllers.</p>
+ *
+ * <p>Allows for tuning constants without re-deploying,
+ * especially useful for PIDF gains. This configuration
+ * includes most basic tuning constants as well as
+ * S-curve strength (CTRE) and minimum velocity (Spark)
+ * but additional constants can be added using
+ * {@link #initEntry(String, double, Consumer, Consumer)}.
+ * For fewer, consider using the base class instead.</p>
+ *
+ * <p>Values are updated to an actator updater (the motor)
+ * and a storage updater (PID config object) each time
+ * the value changes and a callback occurs.</p>
+ *
+ * @see BaseRealtimeTuner
+ * @see #initBaseController(ValueUpdater...)
+ * @see #initCTRE(BaseTalon, int)
+ * @see #initSpark(CANSparkMax, int)
+ * @since 0.4.0
+ */
 public class MotorRealtimeTuner extends BaseRealtimeTuner {
     private final MotionProfile ctrlConfig;
     private final PIDConfig pidConfig;
 
+    /**
+     * Constructs a realtime motor tuner object.
+     * Does not initialize any values.
+     *
+     * @param tab the tab to put all entries onto.
+     * @param ctrlConfig the controller motion profile configuration.
+     * @param pidConfig the controller PID(F) configuration.
+     *
+     * @see BaseRealtimeTuner#BaseRealtimeTuner(RSTab)
+     * @since 0.4.0
+     */
     public MotorRealtimeTuner(RSTab tab, MotionProfile ctrlConfig, PIDConfig pidConfig) {
         super(tab);
         this.ctrlConfig = ctrlConfig;
         this.pidConfig = pidConfig;
     }
 
+    /**
+     * <p>Initialize base values for a generic controller.</p>
+     *
+     * <p>Not intended to be called directly, but rather through
+     * controller-specific methods in this class. Only call once,
+     * otherwise values will be overwritten.</p>
+     *
+     * @param updaters all gain action updaters to use (motor config setters).
+     *
+     * @see ValueUpdater
+     * @see #initCTRE(BaseTalon, int)
+     * @see #initSpark(CANSparkMax, int)
+     * @since 0.4.0
+     */
     public void initBaseController(ValueUpdater... updaters) {
         initEntry("P Gain", pidConfig.getP(), pidConfig::setP, updaters[0]);
         initEntry("I Gain", pidConfig.getI(), pidConfig::setI, updaters[1]);
@@ -49,10 +99,30 @@ public class MotorRealtimeTuner extends BaseRealtimeTuner {
         initEntry("Max Acceleration", ctrlConfig.getMaxAccel(), ctrlConfig::setMaxAccel, updaters[8]);
     }
 
+    /**
+     * <p>Initialize a CTRE motor controller (Talon, Victor, Falcon) for Motion Magic tuning.
+     * Uses a default slot index of 0.</p>
+     *
+     * <p>Overload for {@link #initCTRE(BaseTalon, int)}.</p>
+     *
+     * @see #initCTRE(BaseTalon, int)
+     * @since 0.4.0
+     */
     public boolean initCTRE(BaseTalon motor) {
         return initCTRE(motor, 0);
     }
 
+    /**
+     * <p>Initialize a CTRE motor controller (Talon, Victor, Falcon) for Motion Magic tuning.</p>
+     *
+     * <p>This does not set up the motor for MotionMagic.</p>
+     *
+     * @param motor the motor to apply settings to.
+     * @param slotIdx the slot on the selected motor to use.
+     * @return if the configuration for this realtime tuner is a Motion Magic config.
+     *
+     * @since 0.4.0
+     */
     public boolean initCTRE(BaseTalon motor, int slotIdx) {
         initBaseController(
                 kP -> motor.config_kP(slotIdx, kP),
@@ -75,10 +145,31 @@ public class MotorRealtimeTuner extends BaseRealtimeTuner {
         return configValidType;
     }
 
+    /**
+     * <p>Initialize a Rev motor controller (Spark MAX) for Smart Motion tuning.
+     * Uses a default slot index of 0.</p>
+     *
+     * <p>Overload for {@link #initSpark(CANSparkMax, int)}.</p>
+     *
+     * @see #initSpark(CANSparkMax, int)
+     * @since 0.4.0
+     */
     public boolean initSpark(CANSparkMax motor) {
         return initSpark(motor, 0);
     }
 
+    /**
+     * <p>Initialize a Rev motor controller (Spark MAX) for Smart Motion tuning.</p>
+     *
+     * <p>Settings applied in realtime are not set permanently (i.e. after power-off)
+     * for Spark controllers. Use {@code motor.burnFlash()} when finished to do so.</p>
+     *
+     * @param motor the motor to apply settings to.
+     * @param slotIdx the slot on the selected motor to use.
+     * @return if the configuration for this realtime tuner is a Motion Magic config.
+     *
+     * @since 0.4.0
+     */
     public boolean initSpark(CANSparkMax motor, int slotIdx) {
         SparkMaxPIDController pid = motor.getPIDController();
         initBaseController(
@@ -99,5 +190,21 @@ public class MotorRealtimeTuner extends BaseRealtimeTuner {
                     minVel -> pid.setSmartMotionMinOutputVelocity(minVel.intValue(), slotIdx));
         }
         return configValidType;
+    }
+
+    /**
+     * <p>Wrapper interface for a double consumer.
+     * Used to avoid creating generic arrays in
+     * {@link #initBaseController(ValueUpdater...)}.</p>
+     *
+     * <p>Not indented for end-user use. Use lambda expressions
+     * or double consumer equivalents as in {@code init} methods.</p>
+     *
+     * @see #initBaseController(ValueUpdater...)
+     * @see #initCTRE(BaseTalon, int)
+     * @see #initSpark(CANSparkMax, int)
+     * @since 0.4.0
+     */
+    public interface ValueUpdater extends Consumer<Double> {
     }
 }
